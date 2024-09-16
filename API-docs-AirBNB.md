@@ -1,4 +1,4 @@
-# `<name of application here>`
+# `Mod 4 Project`
 
 ## Database Schema Design
 
