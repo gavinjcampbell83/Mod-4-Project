@@ -233,7 +233,7 @@ Returns all the spots.
 * Require Authentication: false
 * Request
   * Method: GET
-  * Route path: "/SPOTS"
+  * Route path: "/spots"
   * Body: none
 
 * Successful Response
@@ -273,7 +273,9 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET 
-  * Route path: "/user/:userId/spots"
+  <!-- * Route path: "/users/:userId/spots" -->
+  <!-- userId is identified via the session or token -->
+  * Route path: "/users/spots"
   * Body: none
 
 * Successful Response
@@ -498,7 +500,9 @@ Updates and returns an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: PUT
-  * Route path: /user/spots/:spotsId
+  <!-- * Route path: /users/spots/:spotId -->
+  <!-- user can be inferred based on authentication -->
+  * Route path: /spots/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -584,7 +588,7 @@ Deletes an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /user/spots/:spotId
+  * Route path: /users/spots/:spotId
   * Body: none
 
 * Successful Response
@@ -620,7 +624,7 @@ Returns all the reviews written by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * Route path: /user/reviews
+  * Route path: /users/reviews
   * Body: none
 
 * Successful Response
@@ -731,7 +735,9 @@ Create and return a new review for a spot specified by id.
 * Require Authentication: true
 * Request
   * Method: POST
-  * Route path: /reviews/spots/:spotId
+  <!-- * Route path: /reviews/spots/:spotId -->
+  <!-- more consistent with REST principles -->
+ * Route path: /spots/:spotId/reviews
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -809,7 +815,9 @@ Create and return a new image for a review specified by id.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: POST
-  * Route path: /reviews/:reviewId
+  <!-- * Route path: /reviews/:reviewId -->
+  <!-- more clear and consistent with REST practices: -->
+  *Route path:/reviews/:reviewId/images
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -866,7 +874,7 @@ Update and return an existing review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: PUT
-  * Route path: reviews/:reviewId
+  * Route path: /reviews/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -968,7 +976,7 @@ Return all the bookings that the current user has made.
 * Require Authentication: true
 * Request
   * Method: GET
-  * Route path: /user/:userId/bookings
+  * Route path: /users/:userId/bookings
   * Body: none
 
 * Successful Response
@@ -1163,7 +1171,12 @@ Update and return an existing booking.
 * Require proper authorization: Booking must belong to the current user
 * Request
   * Method: PUT
-  * Route path: /user/spots/bookings/:bookingId
+  <!-- * Route path: /users/spots/bookings/:bookingId -->
+  <!-- simplify and align to RESTful patterns -->
+  *Route path: /users/:userId/bookings/:bookingId
+  or
+  *Route path: /bookings/:bookingId
+
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1258,7 +1271,10 @@ Delete an existing booking.
   Spot must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /user/bookings/:bookingId
+  * Route path: /users/:userId/bookings/:bookingId
+  or
+  * Route path: /bookings/:bookingId
+  
   * Body: none
 
 * Successful Response
