@@ -1274,7 +1274,7 @@ Delete an existing booking.
   * Route path: /users/:userId/bookings/:bookingId
   or
   * Route path: /bookings/:bookingId
-  
+
   * Body: none
 
 * Successful Response
@@ -1358,7 +1358,8 @@ Delete an existing image for a Review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /user/reviews/:reviewId
+  <!-- * Route path: /users/reviews/:reviewId -->
+  * Route path:/users/:userId/reviews/:reviewId/images/:imageId
   * Body: none
 
 * Successful Response
