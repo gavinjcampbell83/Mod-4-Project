@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![database schema](db-schema.png)!
+![db schema](https://camo.githubusercontent.com/ef6b29636b86835e88fe55cb60ce655dcda1a59ff0867d0c68b1753baa09f294/68747470733a2f2f61707061636164656d792d6f70656e2d6173736574732e73332e75732d776573742d312e616d617a6f6e6177732e636f6d2f4d6f64756c61722d437572726963756c756d2f636f6e74656e742f7765656b2d31322f616972626e622d64622d736368656d612e706e67)
 
 ## API Documentation
 
@@ -273,9 +273,7 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET 
-  <!-- * Route path: "/users/:userId/spots" -->
-  <!-- userId is identified via the session or token -->
-  * Route path: /api/spots/:spotid
+  * Route path: /api/spots/current
   * Body: none
 
 * Successful Response
@@ -500,8 +498,6 @@ Updates and returns an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: PUT
-  <!-- * Route path: /users/spots/:spotId -->
-  <!-- user can be inferred based on authentication -->
   * Route path: /api/spots/:spotId
   * Headers:
     * Content-Type: application/json
@@ -735,8 +731,6 @@ Create and return a new review for a spot specified by id.
 * Require Authentication: true
 * Request
   * Method: POST
-  <!-- * Route path: /reviews/spots/:spotId -->
-  <!-- more consistent with REST principles -->
  * Route path: /api/spots/:spotId/reviews
   * Headers:
     * Content-Type: application/json
@@ -815,8 +809,6 @@ Create and return a new image for a review specified by id.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: POST
-  <!-- * Route path: /reviews/:reviewId -->
-  <!-- more clear and consistent with REST practices: -->
   *Route path:/api/reviews/:reviewId/images
   * Headers:
     * Content-Type: application/json
@@ -1171,8 +1163,6 @@ Update and return an existing booking.
 * Require proper authorization: Booking must belong to the current user
 * Request
   * Method: PUT
-  <!-- * Route path: /users/spots/bookings/:bookingId -->
-  <!-- simplify and align to RESTful patterns -->
   *Route path: /api/bookings/:bookingId
   
   * Headers:
