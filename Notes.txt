@@ -20,7 +20,7 @@ fetch('/api/users', {
   method: 'POST',
   headers: {
     "Content-Type": "application/json",
-    "XSRF-TOKEN": `Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw`
+    "XSRF-TOKEN": `PIHyccR4-Tc5KZymCibC4KiTxoF9QDWrMZKg`
   },
   body: JSON.stringify({
     firstName: 'Clark',
