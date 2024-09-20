@@ -70,3 +70,17 @@ fetch('/api/session', {
   },
  
 }).then(res => res.json()).then(data => console.log(data));
+
+Check signIn
+
+fetch('/api/session', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw
+  },
+  body: JSON.stringify({
+    credential: 'TheHulk',
+    password: 'password1'
+  })
+}).then(res => res.json()).then(data => console.log(data));
