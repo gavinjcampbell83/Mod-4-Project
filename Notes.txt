@@ -1,1 +1,72 @@
 [airbnb-db-diagram-info]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-12/airbnb-db-diagram-info.txt
+
+fetch('/api/users', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": `<value of XSRF-TOKEN cookie>`
+  },
+  body: JSON.stringify({
+    firstName: 'Peter',
+    lastName: 'Parker',
+    email: 'firestar@spider.man',
+    username: 'Firestar',
+    password: 'password'
+  })
+}).then(res => res.json()).then(data => console.log(data));
+
+Test the Signup Validation
+fetch('/api/users', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": `Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw`
+  },
+  body: JSON.stringify({
+    firstName: 'Clark',
+    lastName: 'Kent',
+    email: 'super@super.man',
+    username: 'Superman',
+    password: 'password'
+  })
+}).then(res => res.json()).then(data => console.log(data));
+
+Test the Signup Validation
+
+fetch('/api/users', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": `Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw`
+  },
+  body: JSON.stringify({
+    firstName: 'Bruce',
+    lastName: 'Banner',
+    email: 'hulk@marvel.marvel',
+    username: 'TheHulk',
+    password: 'password1'
+  })
+}).then(res => res.json()).then(data => console.log(data));
+
+Test Login
+
+fetch('/api/session', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": `Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw`
+  },
+  body: JSON.stringify({
+    credential: 'TheHulk',
+    password: 'password1'
+  })
+}).then(res => res.json()).then(data => console.log(data));
+
+fetch('/api/session', {
+  method: 'DELETE',
+  headers: {
+    "Content-Type": "application/json",
+    "XSRF-TOKEN": `Sab6qbUU-j1h1mkld-K_28MZtr2-IqG9YfOw`
+  },
+ 
+}).then(res => res.json()).then(data => console.log(data));
