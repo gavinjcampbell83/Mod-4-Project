@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 const user = require('./user');
 module.exports = (sequelize, DataTypes) => {
   class Spots extends Model {
@@ -12,15 +10,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Spots.belongsTo(user)
+      Spots.belongsTo(models.User, { foreignKey: 'Id'});
     }
   }
   Spots.init({
     id: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false
     },
     ownerId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: user, 
         key: 'id'
@@ -28,18 +30,23 @@ module.exports = (sequelize, DataTypes) => {
   },
     address: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     city: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     state: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     country: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     lat: {
       type: DataTypes.DECIMAL,
+      allowNull: false,
       validate: {
         min: -90,
         max: 90,
@@ -47,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     lng: {
       type: DataTypes.DECIMAL,
+      allowNull: false,
       validate: {
         min: -180,
         max: 180,
@@ -54,13 +62,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     description: {
       type: DataTypes.STRING,
+      allowNull: false,
       length: 300,
     },
     price: {
-      type: DataTypes.DECIMAL
+      type: DataTypes.DECIMAL,
+      allowNull: false
     }
   }, 
   {
