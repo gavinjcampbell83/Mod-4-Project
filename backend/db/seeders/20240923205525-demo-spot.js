@@ -1,6 +1,6 @@
 'use strict';
 
-const { Spot } = require('../models')
+const { Spots } = require('../models')
 
 
 let options = {};
@@ -20,7 +20,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-   await Spot.bulkCreate([
+   await Spots.bulkCreate([
     {
     ownerId: 1,
     address: "123 Disney Lane",
