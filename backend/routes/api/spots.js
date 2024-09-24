@@ -14,7 +14,25 @@ router.get('/', async (req, res) => {
     res.status(200).json({ Spots: spots });
 });
 
+router.get('/current', restoreUser, async (req, res) => {
+    const { user } = req;
+    console.log(user);
+    if (!user) {
+        return res.status(401).json({
+            message: 'Authentication required',
+            statusCode: 401
+        });
+    }
 
+    const spots = await Spots.findAll({
+        where: {
+            ownerId: user.id
+        }
+    });
+    return res.json({
+        Spots: spots
+    });
+});
 
 
 
