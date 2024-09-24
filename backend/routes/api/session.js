@@ -34,11 +34,20 @@ router.post(
         }
       });
   
-      if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-        const err = new Error('Login failed');
-        err.status = 401;
+      if(!credential || !password || (!credential && !password)){
+        const err = new Error('Bad Request');
+        err.status = 400;
         err.title = 'Login failed';
-        err.errors = { credential: 'The provided credentials were invalid.' };
+        err.errors = {};
+          if(!credential) err.errors.credential = "Email or username is required";
+          if(!password) err.errors.password = "Password is required";
+        
+        return next(err);
+      }
+
+      if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
+        const err = new Error("Invalid credentials");
+        err.status = 401;
         return next(err);
       }
   
