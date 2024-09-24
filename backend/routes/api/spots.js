@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get('/current', restoreUser, async (req, res) => {
     const { user } = req;
-    console.log(user);
+    console.log('USER------>', user);
     if (!user) {
         return res.status(401).json({
             message: 'Authentication required',
@@ -34,6 +34,14 @@ router.get('/current', restoreUser, async (req, res) => {
     });
 });
 
+router.post('/', requireAuth, async (req, res) => {
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
+    const createSpot = await Spots.create({
+        address, city, state, country, lat, lng, name, description, price})
 
+        res.status(201).json({ createSpot });
+});
+
+   
 module.exports = router;
