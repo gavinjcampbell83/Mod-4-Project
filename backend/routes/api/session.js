@@ -88,8 +88,7 @@ router.get(
   );
 
   router.post(
-    '/',
-    validateLogin,
+    '/',validateLogin,
     async (req, res, next) => {
       const { credential, password } = req.body;
   

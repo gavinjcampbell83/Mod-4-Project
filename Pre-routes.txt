@@ -1,0 +1,18 @@
+get all spots by current user
+
+router.get('/current', authenticate, async (req, res) => {
+
+  const currentUser = req.user.username; 
+    
+    const userSpots = await User.findOne({ 
+      where: { username: currentUser },
+      include: Spot
+    });
+
+    if (!userSpots) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+})
+
+    res.status(200).json({ spots: userSpots.Spots 
+    });
