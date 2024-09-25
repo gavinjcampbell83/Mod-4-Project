@@ -88,3 +88,9 @@ fetch('/api/session', {
 
 defaultValue: 'DefaultFirstName'
 defaultValue: 'DefaultLastName'
+
+*urls*
+https://stock.adobe.com/images/custom-built-luxury-house-in-the-suburbs-of-toronto-canada/505293895
+https://stock.adobe.com/images/3d-rendering-of-modern-cozy-clinker-house-on-the-ponds-with-garage-and-pool-for-sale-or-rent-with-beautiful-landscaping-on-background-clear-summer-night-with-many-stars-on-the-sky/259345006
+https://stock.adobe.com/images/foyer-with-curved-staircase/27580081
+https://stock.adobe.com/images/belgian-style-farmhouse-shot-on-an-overcast-day/409123447
