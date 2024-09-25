@@ -52,7 +52,19 @@ const err = new Error('Login failed');
               err.errors = {lng: "Longitude must be within -180 and 180"},
               err.errors = {name: "Name must be less than 50 characters"},
               err.errors = {description: "Description is required"},
-              err.errors = {price: "Price per day must be a positive number"};
-              return next(err);
-            }
+              res.next(err)
+          
 
+
+router.get('/current', authenticate, async (req, res) => {
+  const currentUser = req.user.username;     
+    const userSpots = await User.findAll({ 
+      where: { username: currentUser },
+      include: { 
+        Spot,
+        reviewImage
+        }
+    });
+    res.status(200).json({ spots: userSpots.reviews
+    })
+})
