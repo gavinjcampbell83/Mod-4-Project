@@ -31,7 +31,7 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
 
 router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
     const imageId = parseInt(req.params.imageId);
-    const deleteImage = await spotImages.findByPk(imageId);
+    const deleteImage = await spotImage.findByPk(imageId);
 
     if(!deleteImage){
         return res.status(404).json({

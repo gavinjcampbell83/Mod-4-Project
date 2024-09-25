@@ -16,3 +16,19 @@ router.get('/current', authenticate, async (req, res) => {
 
     res.status(200).json({ spots: userSpots.Spots 
     });
+
+
+
+npx sequelize-cli model:generate --name spotImage --attributes id:integer,spotId:integer,url:string
+
+npx sequelize-cli seed:generate --name demo-spotImage
+
+npx sequelize-cli model:generate --name review --attributes spotId:integer,userId:integer,review:string,stars:integer
+
+npx sequelize-cli seed:generate --name demo-review
+
+npx sequelize-cli model:generate --name reviewImage --attributes reviewId:integer,url:string
+
+npx sequelize-cli seed:generate --name demo-reviewImage
+
+npx sequelize-cli model:generate --name booking --attributes spotId:integer,userId:integer,startDate:date,endDate:date
