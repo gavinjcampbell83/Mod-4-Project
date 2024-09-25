@@ -33,6 +33,16 @@ npx sequelize-cli seed:generate --name demo-reviewImage
 
 npx sequelize-cli model:generate --name booking --attributes spotId:integer,userId:integer,startDate:date,endDate:date
 
+npx sequelize-cli seed:generate --name demo-booking
+
+npx dotenv sequelize-cli db:migrate
+
+npx dotenv sequelize-cli db:migrate:undo
+
+npx dotenv sequelize-cli db:seed:all
+
+npx dotenv sequelize-cli db:seed:undo
+
 
 
 const err = new Error('Login failed');
