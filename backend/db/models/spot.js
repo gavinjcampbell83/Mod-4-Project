@@ -10,9 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Spot.belongsTo(models.User, { foreignKey: 'ownerId'});
-      Spot.hasMany(models.spotImage, {foreignKey: 'spotId'})
-      Spot.hasMany(models.Review, { foreignKey: 'spotId'})
+      Spot.belongsTo(models.User, { foreignKey: 'ownerId', onDelete: 'CASCADE'});
+      Spot.hasMany(models.spotImage, {foreignKey: 'spotId', onDelete: 'CASCADE'})
+      Spot.hasMany(models.Review, { foreignKey: 'spotId', onDelete: 'CASCADE'})
+      Spot.hasMany(models.Booking, {foreignKey: 'userId', onDelete: 'CASCADE'})
+      Spot.hasMany(models.Booking, {foreignKey: 'spotId', onDelete: 'CASCADE'})
     }
   }
   Spot.init({
@@ -28,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: user, 
         key: 'id'
-    },
+    },    
   },
     address: {
       type: DataTypes.STRING,
