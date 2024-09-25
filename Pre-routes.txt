@@ -19,7 +19,6 @@ router.get('/current', authenticate, async (req, res) => {
 
 
 
-<<<<<<< HEAD
 npx sequelize-cli model:generate --name spotImage --attributes id:integer,spotId:integer,url:string
 
 npx sequelize-cli seed:generate --name demo-spotImage
@@ -33,7 +32,8 @@ npx sequelize-cli model:generate --name reviewImage --attributes reviewId:intege
 npx sequelize-cli seed:generate --name demo-reviewImage
 
 npx sequelize-cli model:generate --name booking --attributes spotId:integer,userId:integer,startDate:date,endDate:date
-=======
+
+
 
 const err = new Error('Login failed');
         err.status = 401;
@@ -56,4 +56,3 @@ const err = new Error('Login failed');
               return next(err);
             }
 
->>>>>>> 8a75e6aaffb2fb63fcbd1c16c6a9e49799c1cc78
