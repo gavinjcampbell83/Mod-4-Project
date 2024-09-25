@@ -1,13 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Spots, spotImages, User } = require('../../db/models')
+const { Spots, spotImage, User } = require('../../db/models')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 
 router.post('/:spotId/images', requireAuth, async (req, res) => {
+    console.log(req.params)
     const spotTableId = parseInt(req.params.spotId);
+    console.log(spotTableId)
     const spot = await Spots.findByPk(spotTableId);
     const { url, preview } = req.body;
 
@@ -17,13 +19,13 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
           });
     };
 
-    const addImage = await spotImages.create({
+    const addImage = await spotImage.create({
         spotId: spotTableId,
         url,
         preview
 
     })
-    res.status(201).json(addImage);
+    return res.status(201).json(addImage);
 })
 
 
