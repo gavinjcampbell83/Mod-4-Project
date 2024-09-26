@@ -45,7 +45,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
     // console.log(spotId);
     const spot = await Spots.findByPk(spotId);
     // console.log(spot)
-=======
+
     const currentUser = req.user.username
     // console.log('Current User------>', currentUser)
     const userReviews = await Review.findAll({
