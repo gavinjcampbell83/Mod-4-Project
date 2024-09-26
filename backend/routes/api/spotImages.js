@@ -6,6 +6,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 
+// Add a image by spotId
 router.post('/:spotId/images', requireAuth, async (req, res) => {
     console.log(req.params)
     const spotTableId = parseInt(req.params.spotId);
@@ -28,7 +29,7 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
     return res.status(201).json(addImage);
 })
 
-
+//Delete Image
 router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
     const imageId = parseInt(req.params.imageId);
     const deleteImage = await spotImage.findByPk(imageId);

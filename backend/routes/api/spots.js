@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
     res.status(200).json({ Spots: spots });
 });
 
+//get spot by current user
 router.get('/current', restoreUser, async (req, res) => {
-    const { user } = req;
-    // console.log('USER------>', user);
+    const { user } = req;    
     if (!user) {
         return res.status(401).json({
             message: 'Authentication required',
@@ -32,6 +32,7 @@ router.get('/current', restoreUser, async (req, res) => {
     });
 });
 
+//Create a Spot
 router.post('/', requireAuth, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const ownerId = req.user.id;
@@ -58,6 +59,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     
 });
 
+// Edit a Spot
 router.put('/:spotId', requireAuth, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
@@ -103,7 +105,7 @@ router.put('/:spotId', requireAuth, async (req, res, next) => {
     return res.status(200).json(updatedSpot)
 })
 
-
+//Delete a Spot
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
     const spotId = parseInt(req.params.spotId);
     const deletedSpot = await Spots.findByPk(spotId);
