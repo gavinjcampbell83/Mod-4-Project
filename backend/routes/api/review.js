@@ -140,21 +140,25 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
 });
 
 
-//Delete a Spot Image
-router.delete('/:imageId', requireAuth, async (req, res) => {
-    const imageId = parseInt(req.params.imageId);
-    const deleteImage = await reviewImage.findByPk(imageId);
+//Delete a Review
+router.delete('/:reviewId', requireAuth, async (req, res) => {
+    const reviewId = parseInt(req.params.reviewId);
+    const deletedReview = await Review.findByPk(reviewId);
 
-    if(!deleteImage){
+    if(!deletedReview){
         return res.status(404).json({
-            "message": "Spot Image couldn't be found"
-          });
+            "message": "Review couldn't be found"
+          })
     }
-    await deleteImage.destroy();
+
+    await deletedReview.destroy();
     res.status(200).json({
         "message": "Successfully deleted"
-    });
-});
+      })
+})
+
+
+
 
 
 
