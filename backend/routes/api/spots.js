@@ -12,7 +12,9 @@ router.get('/', async (req, res) => {
     res.status(200).json({ Spots: spots });
 });
 
-//get spot by current user
+
+//get all Spots owned by the Current User
+
 router.get('/current', restoreUser, async (req, res) => {
     const { user } = req;    
     if (!user) {
@@ -59,7 +61,8 @@ router.post('/', requireAuth, async (req, res, next) => {
     
 });
 
-// Edit a Spot
+
+//Edit a Spot
 router.put('/:spotId', requireAuth, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
