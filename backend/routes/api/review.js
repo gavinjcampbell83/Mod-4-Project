@@ -69,6 +69,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
     const { review, stars } = req.body;
     const { spotId } = req.params;
+    console.log(typeof spotId)
     const userId = req.user.id;
     console.log("did it agin")
 
@@ -103,7 +104,7 @@ console.log("did it agin1")
 console.log("did it agin3")
 
     const createReview = await Review.create({
-        review, stars               
+        spotId, userId, review, stars               
     });
     res.status(201).json(createReview);    
 });
