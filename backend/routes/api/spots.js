@@ -12,10 +12,11 @@ router.get('/', async (req, res) => {
     res.status(200).json({ Spots: spots });
 });
 
+
 //get all Spots owned by the Current User
+
 router.get('/current', restoreUser, async (req, res) => {
-    const { user } = req;
-    // console.log('USER------>', user);
+    const { user } = req;    
     if (!user) {
         return res.status(401).json({
             message: 'Authentication required',
@@ -59,6 +60,7 @@ router.post('/', requireAuth, async (req, res, next) => {
         res.status(201).json({ createSpot });
     
 });
+
 
 //Edit a Spot
 router.put('/:spotId', requireAuth, async (req, res, next) => {

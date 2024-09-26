@@ -11,6 +11,7 @@ const router = express.Router();
 
 //Get all Reviews of the Current User
 router.get('/current', requireAuth, async (req, res) => {
+
     // console.log(req)
     const currentUser = req.user.username
     // console.log('Current User------>', currentUser)
@@ -44,11 +45,44 @@ router.get('/:spotId/reviews', async (req, res, next) => {
     // console.log(spotId);
     const spot = await Spots.findByPk(spotId);
     // console.log(spot)
+=======
+    const currentUser = req.user.username
+    // console.log('Current User------>', currentUser)
+    const userReviews = await Review.findAll({
+       include: [
+        {
+            model: User,
+            where: { username: currentUser },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+        },
+        {
+            model: Spots,
+            // where: { userId: req.user.id },
+            attributes: { exclude: ['createdAt', 'updatedAt','description'] }
+        },
+        {
+            model: reviewImage,
+            // where: { userId: req.user.id },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
+        }
+    ]  
+});
+res.status(200).json({ Reviews: userReviews });
+});
+
+                       
+//Get all Reviews by a Spot's id
+router.get('/:spotId/reviews', async (req, res, next) => {   
+    const { spotId } = req.params; 
+
+    const spot = await Spots.findByPk(spotId);    
+
     if(!spot){
         return res.status(404).json({
             "message": "Spot couldn't be found"
             });
     }
+
     const reviews = await Review.findAll({
         where: { spotId },
         include: [
@@ -68,10 +102,10 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 //Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
     const { review, stars } = req.body;
-    const spotId = Number(req.params.spotId);
-    // console.log(typeof spotId)
+
+    const spotId = Number(req.params.spotId);   
     const userId = req.user.id;
-    // console.log("did it agin")
+    
 
     if (!review || !stars) {
         const err = new Error("Bad Request");
@@ -81,7 +115,6 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
         if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5";
         return next(err);
     }
-// console.log("did it agin1")
 
 
     const spot = await Spots.findByPk(req.params.spotId);
@@ -90,7 +123,7 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
         "message": "Spot couldn't be found"
         });
     }
-    // console.log("did it agin2")
+
 
     const existingReview = await Review.findOne({
         where: { spotId, userId }
@@ -101,7 +134,7 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
         "message": "User already has a review for this spot"
         });
     }
-// console.log("did it agin3")
+
 
     const createReview = await Review.create({
         spotId, userId, review, stars               
@@ -109,6 +142,7 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
     res.status(201).json(createReview);    
 });
   
+
 //Add an Image to a Review based on the Review's Id
 router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     // console.log('hello');
@@ -156,6 +190,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
         "message": "Successfully deleted"
       })
 })
+
 
 
 
