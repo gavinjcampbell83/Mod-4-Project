@@ -68,10 +68,10 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 //Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
     const { review, stars } = req.body;
-    const { spotId } = req.params;
-    console.log(typeof spotId)
+    const spotId = Number(req.params.spotId);
+    // console.log(typeof spotId)
     const userId = req.user.id;
-    console.log("did it agin")
+    // console.log("did it agin")
 
     if (!review || !stars) {
         const err = new Error("Bad Request");
@@ -81,16 +81,16 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
         if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5";
         return next(err);
     }
-console.log("did it agin1")
+// console.log("did it agin1")
 
 
-    const spot = await Spots.findByPk(spotId);
+    const spot = await Spots.findByPk(req.params.spotId);
     if (!spot) {
         return res.status(404).json({
         "message": "Spot couldn't be found"
         });
     }
-    console.log("did it agin2")
+    // console.log("did it agin2")
 
     const existingReview = await Review.findOne({
         where: { spotId, userId }
@@ -101,7 +101,7 @@ console.log("did it agin1")
         "message": "User already has a review for this spot"
         });
     }
-console.log("did it agin3")
+// console.log("did it agin3")
 
     const createReview = await Review.create({
         spotId, userId, review, stars               
@@ -109,8 +109,35 @@ console.log("did it agin3")
     res.status(201).json(createReview);    
 });
   
-
-
+//Add an Image to a Review based on the Review's Id
+router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
+    // console.log('hello');
+    const { reviewId } = req.params;
+    const { url } = req.body;
+    // console.log(reviewId)
+    const review = await Review.findByPk(reviewId);
+    console.log(review)
+    if(!review){
+        return res.status(404).json({
+             "message": "Review couldn't be found"
+            });
+    }
+    const imageCount = await reviewImage.count({ where: {reviewId } });
+    if (imageCount >= 10){
+        return res.status(403).json({
+            "message": "Maximum number of images for this resource was reached"
+        });
+    }
+    
+    const newImage = await reviewImage.create({
+        reviewId,
+        url
+    })
+    return res.status(201).json({
+        id: newImage.id,
+        url: newImage.url
+    });
+});
 
 
 
