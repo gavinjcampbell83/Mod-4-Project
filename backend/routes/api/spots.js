@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Spots, User } = require('../../db/models')
+const { Spots, User, spotImage, Owner} = require('../../db/models')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
@@ -123,7 +123,40 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
     res.status(200).json({
         "message": "Successfully deleted"
       })
-})
+});
+
+//Get details of a Spot from an id
+router.get('/:spotId', requireAuth, async (req, res, next) => {
+    
+        const spotId = req.params.spotId;
+        
+        if(!spotId){
+            return res.status(404).json({
+                "message": "Spot couldn't be found"
+              })
+        }
+        console.log("hit the route");
+        const details = await Spots.findByPk(spotId, {
+           
+            include: [
+                {
+                    model: User, 
+                    as: Owner,                  
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+                },
+                {
+                    model: spotImage, 
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'spotId'] }
+                }
+            ]
+            
+        })
+        console.log("hit the route");
+    res.status(200).json(details);
+});                                                                                                                
+                                                                                      
+
+       
 
    
 module.exports = router;
