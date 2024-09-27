@@ -10,14 +10,6 @@ const { where } = require('sequelize');
 const router = express.Router();
 
 
-
-
-
-
-
-
-
-
 //Delete a Review Image
 router.delete('/:imageId', requireAuth, async (req, res) => {
     const imageId = parseInt(req.params.imageId);

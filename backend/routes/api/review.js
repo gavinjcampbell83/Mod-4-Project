@@ -9,65 +9,102 @@ const { where } = require('sequelize');
 const router = express.Router();
 
 
-//Get all Reviews of the Current User
+// //Get all Reviews of the Current User
 router.get('/current', requireAuth, async (req, res) => {
+    const currentUser = req.user.username;
 
-    // console.log(req)
-    const currentUser = req.user.username
-    // console.log('Current User------>', currentUser)
+    // Fetch the reviews by the current user along with associated User, Spot, ReviewImages, and SpotImages
     const userReviews = await Review.findAll({
-        // where: { currentUser },
         include: [
-                {
-                    model: User,
-                    where: { username: currentUser },
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
-                },
-                {
-                    model: Spots,
-                    // where: { userId: req.user.id },
-                    attributes: { exclude: ['createdAt', 'updatedAt','description'] }
-                },
-                {
-                    model: reviewImage,
-                    // where: { userId: req.user.id },
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
-                }
-            ]  
-        });
-        res.status(200).json({ Reviews: userReviews });
+            {
+                model: User,
+                where: { username: currentUser },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+            },
+            {
+                model: Spots,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'description'] },
+                include: [
+                    {
+                        model: spotImage,
+                        attributes: ['url', 'preview']  // Get the URL and preview status
+                    }
+                ]
+            },
+            {
+                model: reviewImage,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
+            }
+        ]
+    });
+
+    // Format the response to include previewImages
+    const formattedReviews = userReviews.map(review => {
+        const reviewData = review.toJSON();
+
+        // Get the preview image from the associated spotImages
+        const previewImageObj = reviewData.Spot.spotImages?.find(image => image.preview === true) || null;
+
+        return {
+            id: reviewData.id,
+            userId: reviewData.userId,
+            spotId: reviewData.spotId,
+            review: reviewData.review,
+            stars: reviewData.stars,
+            createdAt: reviewData.createdAt,
+            updatedAt: reviewData.updatedAt,
+            User: {
+                id: reviewData.User.id,
+                firstName: reviewData.User.firstName,
+                lastName: reviewData.User.lastName
+            },
+            Spot: {
+                id: reviewData.Spot.id,
+                ownerId: reviewData.Spot.ownerId,
+                address: reviewData.Spot.address,
+                city: reviewData.Spot.city,
+                state: reviewData.Spot.state,
+                country: reviewData.Spot.country,
+                lat: reviewData.Spot.lat,
+                lng: reviewData.Spot.lng,
+                name: reviewData.Spot.name,
+                price: reviewData.Spot.price,
+                previewImage: previewImageObj ? previewImageObj.url : null  // Include preview image if available
+            },
+            ReviewImages: reviewData.reviewImages || []  // Include all review images
+        };
+    });
+
+    // Return the formatted reviews
+    res.status(200).json({ Reviews: formattedReviews });
 });
 
-//Get all Reviews by a Spot's id
-// router.get('/:spotId/reviews', async (req, res, next) => {
-//     // console.log("do I make it")
-//     const { spotId } = req.params;
-//     // console.log(spotId);
-//     const spot = await Spots.findByPk(spotId);
-//     // console.log(spot)
+// router.get('/current', requireAuth, async (req, res) => {
 
+//     // console.log(req)
 //     const currentUser = req.user.username
 //     // console.log('Current User------>', currentUser)
 //     const userReviews = await Review.findAll({
-//        include: [
-//         {
-//             model: User,
-//             where: { username: currentUser },
-//             attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
-//         },
-//         {
-//             model: Spots,
-//             // where: { userId: req.user.id },
-//             attributes: { exclude: ['createdAt', 'updatedAt','description'] }
-//         },
-//         {
-//             model: reviewImage,
-//             // where: { userId: req.user.id },
-//             attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
-//         }
-//     ]  
-// });
-// res.status(200).json({ Reviews: userReviews });
+//         // where: { currentUser },
+//         include: [
+//                 {
+//                     model: User,
+//                     where: { username: currentUser },
+//                     attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+//                 },
+//                 {
+//                     model: Spots,
+//                     // where: { userId: req.user.id },
+//                     attributes: { exclude: ['createdAt', 'updatedAt','description'] }
+//                 },
+//                 {
+//                     model: reviewImage,
+//                     // where: { userId: req.user.id },
+//                     attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
+//                 }
+//             ]  
+//         });
+//         res.status(200).json({ Reviews: userReviews });
 // });
 
                        

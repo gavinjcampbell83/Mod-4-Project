@@ -8,6 +8,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 
+
 const validateLogin = [
     check('credential')
       .exists({ checkFalsy: true })
@@ -53,7 +54,7 @@ router.post(
   
       const safeUser = {
         id: user.id,
-        fisrtName: user.firstName,
+        firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         username: user.username,
@@ -84,7 +85,7 @@ router.get(
       if (user) {
         const safeUser = {
           id: user.id,
-          fisrtName: user.firstName,
+          firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
           username: user.username,
@@ -120,7 +121,7 @@ router.get(
   
       const safeUser = {
         id: user.id,
-        fisrtName: user.firstName,
+        firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         username: user.username,

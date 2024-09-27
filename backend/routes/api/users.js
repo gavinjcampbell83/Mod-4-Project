@@ -38,7 +38,7 @@ router.post(
   
       const safeUser = {
         id: user.id,
-        fisrtName: user.firstName,
+        firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         username: user.username
@@ -47,9 +47,7 @@ router.post(
   
       await setTokenCookie(res, safeUser);
   
-      return res.json({
-        user: safeUser
-      });
+      return res.status(201).json({user: safeUser});
     }
   );
 

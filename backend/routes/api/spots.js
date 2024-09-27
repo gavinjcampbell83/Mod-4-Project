@@ -7,6 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 const { Sequelize } = require('sequelize'); 
 
+
 // //get all spots with avgStars and Preview image
 // router.get('/', async (req, res) => {
 //     const spots = await Spots.findAll();
@@ -57,9 +58,12 @@ router.get('/', async (req, res) => {
         });
     }
 
-    // Set default values for pagination if not provided
-    const limit = size ? Number(size) : null;
-    const offset = page ? (Number(page) - 1) * (limit || 20) : null;
+    // Set default values for page and size if not provided
+    const pageNumber = page ? Number(page) : 1;  // Default page = 1
+    const pageSize = size ? Number(size) : 20;   // Default size = 20
+
+    const limit = pageSize;
+    const offset = (pageNumber - 1) * limit;
 
     // Prepare filters
     const whereConditions = {};
@@ -118,17 +122,18 @@ router.get('/', async (req, res) => {
     // Prepare the response object
     const response = { Spots: formattedSpots };
 
-    // Only include pagination info if provided
-    if (page) response.page = page;
-    if (size) response.size = size;
+    // Only include pagination info in the response if page and size were provided
+    if (req.query.page) response.page = pageNumber;
+    if (req.query.size) response.size = pageSize;
 
     res.status(200).json(response);
 });
 
 //get all Spots owned by the Current User
 
-router.get('/current', restoreUser, async (req, res) => {
-    const { user } = req;    
+router.get('/current', requireAuth, async (req, res) => {
+    const { user } = req;
+    
     if (!user) {
         return res.status(401).json({
             message: 'Authentication required',
@@ -139,38 +144,89 @@ router.get('/current', restoreUser, async (req, res) => {
     const spots = await Spots.findAll({
         where: {
             ownerId: user.id
-        }
+        },
+        attributes: [
+            'id', 'ownerId', 'address', 'city', 'state', 'country', 
+            'lat', 'lng', 'name', 'description', 'price', 
+            'createdAt', 'updatedAt',
+            // Corrected subquery to calculate average rating per spot
+            [Sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'avgRating']
+        ],
+        include: [
+            {
+                model: spotImage,
+                attributes: ['url', 'preview'],
+                required: false
+            }
+        ]
     });
-    return res.json({
-        Spots: spots
+
+    // Format the response
+    const formattedSpots = spots.map(spot => {
+        const spotData = spot.toJSON();
+        const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
+
+        return {
+            id: spotData.id,
+            ownerId: spotData.ownerId,
+            address: spotData.address,
+            city: spotData.city,
+            state: spotData.state,
+            country: spotData.country,
+            lat: spotData.lat,
+            lng: spotData.lng,
+            name: spotData.name,
+            description: spotData.description,
+            price: spotData.price,
+            createdAt: spotData.createdAt,
+            updatedAt: spotData.updatedAt,
+            avgRating: parseFloat(spotData.avgRating) || null,
+            previewImage: previewImageObj ? previewImageObj.url : null
+        };
     });
+
+    const response = { Spots: formattedSpots };
+
+    return res.json(response);
 });
 
 // Get details of a Spot from an id
-router.get('/:spotId', requireAuth, async (req, res, next) => {
+router.get('/:spotId', async (req, res, next) => {
     const spotId = req.params.spotId;
 
+    // Fetch spot details with associated User (Owner) and SpotImages
     const details = await Spots.findByPk(spotId, {
+        attributes: [
+            'id', 'ownerId', 'address', 'city', 'state', 'country', 
+            'lat', 'lng', 'name', 'description', 'price', 
+            'createdAt', 'updatedAt',
+            // Calculate avgStarRating and count the total number of reviews
+            [Sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'avgStarRating'],
+            [Sequelize.literal('(SELECT COUNT(*) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'numReviews']  // Count total reviews
+        ],
         include: [
             {
-                model: User,
+                model: User,  // Include the owner (User)
                 attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
             },
             {
-                model: spotImage, 
+                model: spotImage,  // Include images
                 attributes: { exclude: ['createdAt', 'updatedAt', 'spotId'] }
             }
         ]
     });
 
+    // If no spot found, return 404
     if (!details) {
         return res.status(404).json({
-            "message": "Spot couldn't be found"
+            message: "Spot couldn't be found"
         });
     }
 
+    // Convert Sequelize instance to plain JSON
     const spotData = details.toJSON();
     
+    // Format the response
     const formattedResponse = {
         id: spotData.id,
         ownerId: spotData.ownerId,
@@ -185,14 +241,17 @@ router.get('/:spotId', requireAuth, async (req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        SpotImages: spotData.spotImages || [], 
-        Owner: {  
-            id: spotData.User.id,
+        numReviews: parseInt(spotData.numReviews) || 0,  // Include total number of reviews
+        avgStarRating: parseFloat(spotData.avgStarRating) || null,  // Include avgStarRating
+        SpotImages: spotData.spotImages || [],  // Include all spot images
+        Owner: {
+            id: spotData.User.id,  // Rename User to Owner
             firstName: spotData.User.firstName,
             lastName: spotData.User.lastName
         }
     };
 
+    // Send response with formatted spot details
     res.status(200).json(formattedResponse);
 });
 
