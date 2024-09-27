@@ -4,6 +4,7 @@ const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth')
 const { Spots, User, spotImage, Review } = require('../../db/models')
 const router = express.Router();
 const { Sequelize, fn, col } = require('sequelize'); 
+const { avgRatings, reviewCount } = require('../../utils/helperfuncs'); // Adjust the path as needed
 
 //get all spots with avgStars and Preview image
 router.get('/', async (req, res) => {
@@ -71,7 +72,7 @@ router.get('/', async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
+            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
             // [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
@@ -91,9 +92,11 @@ router.get('/', async (req, res) => {
         group: ['Spots.id']
     });
 
-    const formattedSpots = spots.map(spot => {
+    const formattedSpots = await Promise.all(spots.map(async (spot) => {
         const spotData = spot.toJSON();
         const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
+
+        const avgRating = await avgRatings(spotData.id);
 
         return {
             id: spotData.id,
@@ -107,12 +110,12 @@ router.get('/', async (req, res) => {
             name: spotData.name,
             description: spotData.description,
             price: spotData.price,
-            createdAt: spotData.createdAt,
             updatedAt: spotData.updatedAt,
-            avgRating: parseFloat(spotData.avgRating) || null,
+            createdAt: spotData.createdAt,
+            avgRating: avgRating || 0,
             previewImage: previewImageObj ? previewImageObj.url : null
         };
-    });
+    }));
 
     const response = { 
         Spots: formattedSpots,
@@ -141,8 +144,6 @@ router.get('/current', requireAuth, async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
-            // [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
@@ -153,9 +154,12 @@ router.get('/current', requireAuth, async (req, res) => {
         ]
     });
 
-    const formattedSpots = spots.map(spot => {
+    const formattedSpots = await Promise.all(spots.map(async (spot) => {
         const spotData = spot.toJSON();
         const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
+
+        // Calculate avgRating using avgRatings function
+        const avgRating = await avgRatings(spotData.id);
 
         return {
             id: spotData.id,
@@ -171,10 +175,10 @@ router.get('/current', requireAuth, async (req, res) => {
             price: spotData.price,
             createdAt: spotData.createdAt,
             updatedAt: spotData.updatedAt,
-            avgRating: parseFloat(spotData.avgRating) || null,
+            avgRating: parseFloat(avgRating) || null,
             previewImage: previewImageObj ? previewImageObj.url : null
         };
-    });
+    }));
 
     const response = { Spots: formattedSpots };
 
@@ -191,10 +195,6 @@ router.get('/:spotId', async (req, res, next) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [ Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgStarRating'],          
-            [ Sequelize.literal('(SELECT COUNT("id") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'numReviews' ]
-               
-           
         ],
         include: [
             {
@@ -216,31 +216,37 @@ router.get('/:spotId', async (req, res, next) => {
 
     const spotData = details.toJSON();
     
-    const formattedResponse = {
-        id: spotData.id,
-        ownerId: spotData.ownerId,
-        address: spotData.address,
-        city: spotData.city,
-        state: spotData.state,
-        country: spotData.country,
-        lat: spotData.lat,
-        lng: spotData.lng,
-        name: spotData.name,
-        description: spotData.description,
-        price: spotData.price,
-        createdAt: spotData.createdAt,
-        updatedAt: spotData.updatedAt,
-        numReviews: parseInt(spotData.numReviews) || 0,  
-        avgStarRating: parseFloat(spotData.avgStarRating) || null,  
-        SpotImages: spotData.spotImages || [],  
-        Owner: {
-            id: spotData.User.id,  
-            firstName: spotData.User.firstName,
-            lastName: spotData.User.lastName
-        }
-    };
-    res.status(200).json(formattedResponse);
-});
+       // Calculate avgStarRating and numReviews using helper functions
+       const avgStarRating = await avgRatings(spotId);
+       const numReviews = await reviewCount(spotId);
+   
+       // Format response
+       const formattedResponse = {
+           id: spotData.id,
+           ownerId: spotData.ownerId,
+           address: spotData.address,
+           city: spotData.city,
+           state: spotData.state,
+           country: spotData.country,
+           lat: spotData.lat,
+           lng: spotData.lng,
+           name: spotData.name,
+           description: spotData.description,
+           price: spotData.price,
+           createdAt: spotData.createdAt,
+           updatedAt: spotData.updatedAt,
+           numReviews: numReviews || 0,
+           avgStarRating: parseFloat(avgStarRating) || 0,
+           SpotImages: spotData.spotImages || [],
+           Owner: {
+               id: spotData.User.id,
+               firstName: spotData.User.firstName,
+               lastName: spotData.User.lastName
+           }
+       };
+   
+       res.status(200).json(formattedResponse);
+   });
 
 //Create a Spot
 router.post('/', requireAuth, async (req, res, next) => {
