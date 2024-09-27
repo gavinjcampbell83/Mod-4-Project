@@ -39,36 +39,36 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 //Get all Reviews by a Spot's id
-router.get('/:spotId/reviews', async (req, res, next) => {
-    // console.log("do I make it")
-    const { spotId } = req.params;
-    // console.log(spotId);
-    const spot = await Spots.findByPk(spotId);
-    // console.log(spot)
-=======
-    const currentUser = req.user.username
-    // console.log('Current User------>', currentUser)
-    const userReviews = await Review.findAll({
-       include: [
-        {
-            model: User,
-            where: { username: currentUser },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
-        },
-        {
-            model: Spots,
-            // where: { userId: req.user.id },
-            attributes: { exclude: ['createdAt', 'updatedAt','description'] }
-        },
-        {
-            model: reviewImage,
-            // where: { userId: req.user.id },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
-        }
-    ]  
-});
-res.status(200).json({ Reviews: userReviews });
-});
+// router.get('/:spotId/reviews', async (req, res, next) => {
+//     // console.log("do I make it")
+//     const { spotId } = req.params;
+//     // console.log(spotId);
+//     const spot = await Spots.findByPk(spotId);
+//     // console.log(spot)
+
+//     const currentUser = req.user.username
+//     // console.log('Current User------>', currentUser)
+//     const userReviews = await Review.findAll({
+//        include: [
+//         {
+//             model: User,
+//             where: { username: currentUser },
+//             attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+//         },
+//         {
+//             model: Spots,
+//             // where: { userId: req.user.id },
+//             attributes: { exclude: ['createdAt', 'updatedAt','description'] }
+//         },
+//         {
+//             model: reviewImage,
+//             // where: { userId: req.user.id },
+//             attributes: { exclude: ['createdAt', 'updatedAt', 'reviewId'] }
+//         }
+//     ]  
+// });
+// res.status(200).json({ Reviews: userReviews });
+// });
 
                        
 //Get all Reviews by a Spot's id
@@ -173,6 +173,33 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     });
 });
 
+//Edit a Review
+router.put('/:reviewId', requireAuth, async (req, res, next) => {
+    // console.log('hello')
+   const reviewId = req.params.reviewId;
+   const { review, stars } = req.body;
+//    console.log(reviewId);
+    const updatedReview = await Review.findByPk(reviewId)
+    // console.log(updatedReview)
+    if (!review || !stars) {
+        const err = new Error("Bad Request");
+        err.status = 400;
+        err.errors = {};
+        if (!review) err.errors.review = "Review text is required";
+        if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5";
+        return next(err);
+    }
+    if (!updatedReview) {
+        return res.status(404).json({
+        "message": "Review couldn't be found"
+        });
+    }
+    await updatedReview.update({
+        review,
+        stars
+    })
+    return res.status(200).json(updatedReview);
+});
 
 //Delete a Review
 router.delete('/:reviewId', requireAuth, async (req, res) => {

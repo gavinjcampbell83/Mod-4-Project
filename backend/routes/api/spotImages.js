@@ -9,9 +9,9 @@ const router = express.Router();
 
 //Add an Image to a Spot based on the Spot's id
 router.post('/:spotId/images', requireAuth, async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     const spotTableId = parseInt(req.params.spotId);
-    console.log(spotTableId)
+    // console.log(spotTableId)
     const spot = await Spots.findByPk(spotTableId);
     const { url, preview } = req.body;
 
@@ -25,9 +25,14 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
         spotId: spotTableId,
         url,
         preview
-
     })
-    return res.status(201).json(addImage);
+    const response = {
+        id: addImage.id,
+        url: addImage.url,
+        preview: addImage.preview
+    }
+
+    return res.status(201).json(response);
 })
 
 
