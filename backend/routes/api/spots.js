@@ -71,13 +71,18 @@ router.get('/', async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
-            [fn('AVG', col('Reviews.stars')), 'avgRating']
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
+            // [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
                 model: spotImage, 
                 attributes: ['url', 'preview'], 
+                required: false
+            },
+            {
+                model: Review,
+                attributes: [],
                 required: false
             }
         ],
@@ -136,8 +141,8 @@ router.get('/current', requireAuth, async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
-            [fn('AVG', col('Reviews.stars')), 'avgRating']
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
+            // [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
@@ -186,8 +191,10 @@ router.get('/:spotId', async (req, res, next) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [fn('AVG', col('Reviews.stars')), 'avgStarRating'],
-            [fn('COUNT', col('Reviews.id')), 'numReviews']
+            [ Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgStarRating'],          
+            [ Sequelize.literal('(SELECT COUNT("id") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'numReviews' ]
+               
+           
         ],
         include: [
             {
