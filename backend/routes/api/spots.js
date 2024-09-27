@@ -2,35 +2,29 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
 const { Spots, User, spotImage, Review } = require('../../db/models')
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 const { Sequelize } = require('sequelize'); 
 
-
-// //get all spots with avgStars and Preview image
-// router.get('/', async (req, res) => {
-//     const spots = await Spots.findAll();
-//     res.status(200).json({ Spots: spots });
-// });
-
+//get all spots with avgStars and Preview image
 router.get('/', async (req, res) => {
     const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
     const errors = {};
-    
-    // Validate page and size only if provided
+
     if (page) {
         const pageNumber = Number(page);
-        if (pageNumber < 1) errors.page = "Page must be greater than or equal to 1";
+        if (isNaN(pageNumber) || pageNumber < 1) {
+            errors.page = "Page must be a number greater than or equal to 1";
+        }
     }
     
     if (size) {
         const pageSize = Number(size);
-        if (pageSize < 1 || pageSize > 20) errors.size = "Size must be between 1 and 20";
+        if (isNaN(pageSize) || pageSize < 1 || pageSize > 20) {
+            errors.size = "Size must be a number between 1 and 20";
+        }
     }
 
-    // Validate latitude and longitude
     if (minLat && (isNaN(minLat) || Number(minLat) < -90 || Number(minLat) > 90)) {
         errors.minLat = "Minimum latitude is invalid";
     }
@@ -50,7 +44,6 @@ router.get('/', async (req, res) => {
         errors.maxPrice = "Maximum price must be greater than or equal to 0";
     }
 
-    // If there are validation errors, return them
     if (Object.keys(errors).length) {
         return res.status(400).json({
             message: "Bad Request",
@@ -58,14 +51,12 @@ router.get('/', async (req, res) => {
         });
     }
 
-    // Set default values for page and size if not provided
-    const pageNumber = page ? Number(page) : 1;  // Default page = 1
-    const pageSize = size ? Number(size) : 20;   // Default size = 20
+    const pageNumber = page ? Number(page) : 1;  
+    const pageSize = size ? Number(size) : 20;   
 
     const limit = pageSize;
     const offset = (pageNumber - 1) * limit;
 
-    // Prepare filters
     const whereConditions = {};
     if (minLat) whereConditions.lat = { [Sequelize.Op.gte]: minLat };
     if (maxLat) whereConditions.lat = { [Sequelize.Op.lte]: maxLat };
@@ -74,7 +65,6 @@ router.get('/', async (req, res) => {
     if (minPrice) whereConditions.price = { [Sequelize.Op.gte]: minPrice };
     if (maxPrice) whereConditions.price = { [Sequelize.Op.lte]: maxPrice };
 
-    // Fetch spots with filtering, pagination, and averaging ratings
     const spots = await Spots.findAll({
         where: whereConditions,
         attributes: [
@@ -95,7 +85,6 @@ router.get('/', async (req, res) => {
         group: ['Spots.id']
     });
 
-    // Format the response
     const formattedSpots = spots.map(spot => {
         const spotData = spot.toJSON();
         const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
@@ -119,18 +108,15 @@ router.get('/', async (req, res) => {
         };
     });
 
-    // Prepare the response object
-    const response = { Spots: formattedSpots };
-
-    // Only include pagination info in the response if page and size were provided
-    if (req.query.page) response.page = pageNumber;
-    if (req.query.size) response.size = pageSize;
-
+    const response = { 
+        Spots: formattedSpots,
+        page: pageNumber, 
+        size: pageSize     
+    };
     res.status(200).json(response);
 });
 
 //get all Spots owned by the Current User
-
 router.get('/current', requireAuth, async (req, res) => {
     const { user } = req;
     
@@ -149,8 +135,7 @@ router.get('/current', requireAuth, async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            // Corrected subquery to calculate average rating per spot
-            [Sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'avgRating']
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'avgRating']
         ],
         include: [
             {
@@ -161,7 +146,6 @@ router.get('/current', requireAuth, async (req, res) => {
         ]
     });
 
-    // Format the response
     const formattedSpots = spots.map(spot => {
         const spotData = spot.toJSON();
         const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
@@ -194,39 +178,35 @@ router.get('/current', requireAuth, async (req, res) => {
 router.get('/:spotId', async (req, res, next) => {
     const spotId = req.params.spotId;
 
-    // Fetch spot details with associated User (Owner) and SpotImages
+    
     const details = await Spots.findByPk(spotId, {
         attributes: [
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            // Calculate avgStarRating and count the total number of reviews
-            [Sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'avgStarRating'],
-            [Sequelize.literal('(SELECT COUNT(*) FROM Reviews WHERE Reviews.spotId = Spots.id)'), 'numReviews']  // Count total reviews
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'avgStarRating'],
+            [Sequelize.literal('(SELECT COUNT(*) FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'numReviews']  // Count total reviews
         ],
         include: [
             {
-                model: User,  // Include the owner (User)
+                model: User,  
                 attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
             },
             {
-                model: spotImage,  // Include images
+                model: spotImage,  
                 attributes: { exclude: ['createdAt', 'updatedAt', 'spotId'] }
             }
         ]
     });
 
-    // If no spot found, return 404
     if (!details) {
         return res.status(404).json({
             message: "Spot couldn't be found"
         });
     }
 
-    // Convert Sequelize instance to plain JSON
     const spotData = details.toJSON();
     
-    // Format the response
     const formattedResponse = {
         id: spotData.id,
         ownerId: spotData.ownerId,
@@ -241,17 +221,15 @@ router.get('/:spotId', async (req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        numReviews: parseInt(spotData.numReviews) || 0,  // Include total number of reviews
-        avgStarRating: parseFloat(spotData.avgStarRating) || null,  // Include avgStarRating
-        SpotImages: spotData.spotImages || [],  // Include all spot images
+        numReviews: parseInt(spotData.numReviews) || 0,  
+        avgStarRating: parseFloat(spotData.avgStarRating) || null,  
+        SpotImages: spotData.spotImages || [],  
         Owner: {
-            id: spotData.User.id,  // Rename User to Owner
+            id: spotData.User.id,  
             firstName: spotData.User.firstName,
             lastName: spotData.User.lastName
         }
     };
-
-    // Send response with formatted spot details
     res.status(200).json(formattedResponse);
 });
 
@@ -268,13 +246,14 @@ router.post('/', requireAuth, async (req, res, next) => {
         if (!city) err.errors.city = "City is required";
         if (!state) err.errors.state = "State is required";
         if (!country) err.errors.country = "Country is required";
-        if (lat < -90 || lat > 90) err.errors.lat = "Latitude must be within -90 and 90";
-        if (lng < -180 || lng > 180) err.errors.lng = "Longitude must be within -180 and 180";
+        if (lat < -90 || lat > 90 || !lat) err.errors.lat = "Latitude must be within -90 and 90";
+        if (lng < -180 || lng > 180 || !lng) err.errors.lng = "Longitude must be within -180 and 180";
         if (!name || name.length > 50) err.errors.name = "Name must be less than 50 characters";
         if (!description) err.errors.description = "Description is required";
         if (!price || price <= 0) err.errors.price = "Price per day must be a positive number";
         return next(err);
     }    
+    
         const createSpot = await Spots.create({
             ownerId, address, city, state, country, lat, lng, name, description, price
         });
@@ -287,16 +266,21 @@ router.put('/:spotId', requireAuth, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
     const spotId = parseInt(req.params.spotId);
-    // console.log(spotId);
+    const userId = req.user.id;
 
     const updatedSpot = await Spots.findByPk(spotId);
-    // console.log(updatedSpot);
-
+   
     if(!updatedSpot){
         return res.status(404).json({
             "message": "Spot couldn't be found"
           });
     };
+
+    if (userId !== updatedSpot.ownerId) {
+        return res.status(403).json({
+            "message": "Forbidden"
+        });
+    }
 
     if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price) {
         const err = new Error("Bad Request");
@@ -306,8 +290,8 @@ router.put('/:spotId', requireAuth, async (req, res, next) => {
         if (!city) err.errors.city = "City is required";
         if (!state) err.errors.state = "State is required";
         if (!country) err.errors.country = "Country is required";
-        if (lat < -90 || lat > 90) err.errors.lat = "Latitude must be within -90 and 90";
-        if (lng < -180 || lng > 180) err.errors.lng = "Longitude must be within -180 and 180";
+        if (lat < -90 || lat > 90 || !lat) err.errors.lat = "Latitude must be within -90 and 90";
+        if (lng < -180 || lng > 180 || !lng) err.errors.lng = "Longitude must be within -180 and 180";
         if (!name || name.length > 50) err.errors.name = "Name must be less than 50 characters";
         if (!description) err.errors.description = "Description is required";
         if (!price || price <= 0) err.errors.price = "Price per day must be a positive number";
@@ -331,12 +315,19 @@ router.put('/:spotId', requireAuth, async (req, res, next) => {
 //Delete a Spot
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
     const spotId = parseInt(req.params.spotId);
+    const userId = req.user.id;
     const deletedSpot = await Spots.findByPk(spotId);
 
     if(!deletedSpot){
         return res.status(404).json({
             "message": "Spot couldn't be found"
           })
+    }
+
+    if (userId !== deletedSpot.ownerId) {
+        return res.status(403).json({
+            "message": "Forbidden"
+        });
     }
 
     await deletedSpot.destroy();

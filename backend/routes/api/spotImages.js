@@ -9,11 +9,11 @@ const router = express.Router();
 
 //Add an Image to a Spot based on the Spot's id
 router.post('/:spotId/images', requireAuth, async (req, res) => {
-    // console.log(req.params)
-    const spotTableId = parseInt(req.params.spotId);
-    // console.log(spotTableId)
-    const spot = await Spots.findByPk(spotTableId);
-    const { url, preview } = req.body;
+    
+    const userId = req.user.id;
+    const spotId = parseInt(req.params.spotId);
+    
+    const spot = await Spots.findByPk(spotId);
 
     if(!spot){
         return res.status(404).json({
@@ -21,8 +21,16 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
           });
     };
 
+    if (userId !== spot.ownerId) {
+        return res.status(403).json({
+            "message": "Forbidden"
+        });
+    }
+
+    const { url, preview } = req.body;
+
     const addImage = await spotImage.create({
-        spotId: spotTableId,
+        spotId: spotId,
         url,
         preview
     })
@@ -31,21 +39,29 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
         url: addImage.url,
         preview: addImage.preview
     }
-
     return res.status(201).json(response);
 })
-
 
 //Delete a Spot Image
 router.delete('/:imageId', requireAuth, async (req, res) => {
     const imageId = parseInt(req.params.imageId);
+    const userId = req.user.id;
     const deleteImage = await spotImage.findByPk(imageId);
-
+    
     if(!deleteImage){
         return res.status(404).json({
             "message": "Spot Image couldn't be found"
           });
     }
+
+    const spot = await Spots.findByPk(deleteImage.spotId)
+
+    if(userId !== spot.ownerId){
+        return res.status(403).json({
+            "message": "Forbidden"
+        });
+    }
+
     await deleteImage.destroy();
     res.status(200).json({
         "message": "Successfully deleted"
