@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'avgRating']
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
         ],
         include: [
             {
@@ -135,7 +135,7 @@ router.get('/current', requireAuth, async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'avgRating']
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
         ],
         include: [
             {
@@ -184,8 +184,8 @@ router.get('/:spotId', async (req, res, next) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'avgStarRating'],
-            [Sequelize.literal('(SELECT COUNT(*) FROM "Reviews" WHERE "Reviews"."spotId" = "Spots.id")'), 'numReviews']  // Count total reviews
+            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgStarRating'],
+            [Sequelize.literal('(SELECT COUNT(*) FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'numReviews']  // Count total reviews
         ],
         include: [
             {
