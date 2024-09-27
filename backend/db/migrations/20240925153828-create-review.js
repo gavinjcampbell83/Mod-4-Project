@@ -58,7 +58,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = 'Reviews';
+    options.table = 'Reviews';
     return queryInterface.dropTable(options);
   }
 };
