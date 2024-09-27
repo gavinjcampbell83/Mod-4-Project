@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
 const { Spots, User, spotImage, Review } = require('../../db/models')
 const router = express.Router();
-const { Sequelize } = require('sequelize'); 
+const { Sequelize, fn, col } = require('sequelize'); 
 
 //get all spots with avgStars and Preview image
 router.get('/', async (req, res) => {
@@ -71,7 +71,8 @@ router.get('/', async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
+            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
+            [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
@@ -135,7 +136,8 @@ router.get('/current', requireAuth, async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
+            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating']
+            [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
@@ -184,8 +186,8 @@ router.get('/:spotId', async (req, res, next) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgStarRating'],
-            [Sequelize.literal('(SELECT COUNT(*) FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'numReviews']  // Count total reviews
+            [fn('AVG', col('Reviews.stars')), 'avgStarRating'],
+            [fn('COUNT', col('Reviews.id')), 'numReviews']
         ],
         include: [
             {
