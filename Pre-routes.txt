@@ -68,3 +68,9 @@ router.get('/current', authenticate, async (req, res) => {
     res.status(200).json({ spots: userSpots.reviews
     })
 })
+
+
+
+
+npx dotenv sequelize-cli db:seed:undo:all
+npx dotenv sequelize-cli db:migrate:undo:all

@@ -127,36 +127,56 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
 
 //Get details of a Spot from an id
 router.get('/:spotId', requireAuth, async (req, res, next) => {
+    const spotId = req.params.spotId;
+
     
-        const spotId = req.params.spotId;
-        
-        if(!spotId){
-            return res.status(404).json({
-                "message": "Spot couldn't be found"
-              })
+    console.log("hit the route");
+    const details = await Spots.findByPk(spotId, {
+       include: [
+            {
+                model: User, 
+                as: Owner,                  
+                attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
+            },
+            {
+                model: spotImage, 
+                attributes: { exclude: ['createdAt', 'updatedAt', 'spotId'] }
+            }
+        ]            
+    })
+    console.log("hit the route");
+if(!details){
+        return res.status(404).json({
+            "message": "Spot couldn't be found"
+          })
+    }
+
+    const spotData = details.toJSON();
+
+    const response = {
+        id: spotData.id,
+        ownerId: spotData.ownerId,
+        address: spotData.address,
+        city: spotData.city,
+        state: spotData.state,
+        country: spotData.country,
+        lat: spotData.lat,
+        lng: spotData.lng,
+        name: spotData.name,
+        description: spotData.description,
+        price: spotData.price,
+        createdAt: spotData.createdAt,
+        updatedAt: spotData.updatedAt,
+        SpotImages: spotData.spotImages || [], 
+        Owner: {
+            id: spotData.User.id,
+            firstName: spotData.User.firstName,
+            lastName: spotData.User.lastName
         }
-        console.log("hit the route");
-        const details = await Spots.findByPk(spotId, {
-           
-            include: [
-                {
-                    model: User, 
-                    as: Owner,                  
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'username', 'email', 'hashedPassword'] }
-                },
-                {
-                    model: spotImage, 
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'spotId'] }
-                }
-            ]
-            
-        })
-        console.log("hit the route");
-    res.status(200).json(details);
-});                                                                                                                
-                                                                                      
+    };
 
-       
-
-   
+    res.status(200).json(response);
+});    
+                                                                                                                       
+  
 module.exports = router;

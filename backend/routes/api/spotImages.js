@@ -22,6 +22,7 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
     };
 
     const addImage = await spotImage.create({
+        exclude: ['createdAt', 'updatedAt'],
         spotId: spotTableId,
         url,
         preview
