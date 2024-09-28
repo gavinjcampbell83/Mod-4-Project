@@ -4,7 +4,7 @@ const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth')
 const { Spots, User, spotImage, Review } = require('../../db/models')
 const router = express.Router();
 const { Sequelize, fn, col } = require('sequelize'); 
-const { avgRatings, reviewCount } = require('../../utils/helperfuncs'); // Adjust the path as needed
+const { avgRatings, reviewCount } = require('../../utils/helperfuncs');
 
 //get all spots with avgStars and Preview image
 router.get('/', async (req, res) => {
@@ -72,8 +72,6 @@ router.get('/', async (req, res) => {
             'id', 'ownerId', 'address', 'city', 'state', 'country', 
             'lat', 'lng', 'name', 'description', 'price', 
             'createdAt', 'updatedAt',
-            // [Sequelize.literal('(SELECT AVG("stars") FROM "Reviews" WHERE "Reviews"."spotId" = "Spots"."id")'), 'avgRating'],
-            // [fn('AVG', col('Reviews.stars')), 'avgRating']
         ],
         include: [
             {
@@ -158,7 +156,7 @@ router.get('/current', requireAuth, async (req, res) => {
         const spotData = spot.toJSON();
         const previewImageObj = spotData.spotImages?.find(image => image.preview === true) || null;
 
-        // Calculate avgRating using avgRatings function
+        
         const avgRating = await avgRatings(spotData.id);
 
         return {
@@ -216,11 +214,10 @@ router.get('/:spotId', async (req, res, next) => {
 
     const spotData = details.toJSON();
     
-       // Calculate avgStarRating and numReviews using helper functions
+       
        const avgStarRating = await avgRatings(spotId);
        const numReviews = await reviewCount(spotId);
    
-       // Format response
        const formattedResponse = {
            id: spotData.id,
            ownerId: spotData.ownerId,

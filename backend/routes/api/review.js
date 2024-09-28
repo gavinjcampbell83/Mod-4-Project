@@ -100,7 +100,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
             }
         ]
     });
-    //  rename `reviewImages`
+   
     const formattedReviews = reviews.map(review => {
         const reviewObj = review.toJSON();  
         reviewObj.ReviewImages = reviewObj.reviewImages;  
