@@ -32,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       preview: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false, // Consider adding a default value for clarity
+        defaultValue: false, 
       },
     },
     {
       sequelize,
-      modelName: 'spotImage', // Use PascalCase for model name
+      modelName: 'spotImage', 
     }
   );
 
