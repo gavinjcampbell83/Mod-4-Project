@@ -109,7 +109,7 @@ router.get('/', async (req, res) => {
             lng: spotData.lng,
             name: spotData.name,
             description: spotData.description,
-            price: spotData.pric,
+            price: spotData.price,
             updatedAt: spotData.updatedAt,
             createdAt: spotData.createdAt,
             avgRating: avgRating || 0,
