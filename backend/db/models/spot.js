@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       lat: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.FLOAT,
         allowNull: false,
         validate: {
           min: -90,
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       lng: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.FLOAT,
         allowNull: false,
         validate: {
           min: -180,
@@ -72,17 +72,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [0, 300], // Use validate to set a maximum length
+          len: [0, 300], 
         },
       },
       price: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: 'Spots', // Use singular form of the model name for consistency
+      modelName: 'Spots', 
       validate: {
         bothCoordsOrNone() {
           if ((this.lat === null) !== (this.lng === null)) {
