@@ -1,0 +1,150 @@
+/* Main container for the navigation bar */
+.navigation-container {
+    display: flex;
+    justify-content: space-between; /* Home on the left, Profile on the right */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa; /* Light background for the navbar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow for navbar */
+  }
+  
+  /* Left side for Home link */
+  .navigation-menu {
+    display: flex;
+    gap: 10px; /* Adds spacing between the links */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Individual navigation links */
+  .nav-link {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    background-color: #0056b3;
+  }
+  
+  .nav-link.active {
+    background-color: #0056b3;
+  }
+  
+  /* Right side for Profile button */
+  .profile-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Profile Button styling */
+  .profile-button {
+    background: none;
+    border: none;
+    font-size: 24px; /* Reduced size to make the profile icon smaller */
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  /* Profile Button hover effect */
+  .profile-button:hover {
+    color: #0056b3;
+  }
+  
+  /* Profile dropdown */
+  .profile-dropdown {
+    position: absolute;
+    top: 50px; /* Adjusted for the dropdown to be right under the icon */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px;
+    list-style-type: none;
+    padding: 10px 0;
+  }
+  
+  /* Dropdown items */
+  .profile-dropdown li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .profile-dropdown li:last-child {
+    border-bottom: none;
+  }
+  
+  /* Dropdown button inside the profile */
+  .profile-dropdown li button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .profile-dropdown li button:hover {
+    text-decoration: underline;
+  }
+  
+  /* Hidden class for hiding the dropdown */
+  .hidden {
+    display: none;
+  }
+  
+  /* Modal-specific styles */
+  .modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for modal background */
+    z-index: 1000;
+  }
+
+  .modal-menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .modal-menu-item:hover {
+    background-color: #f1f1f1;
+    color: #0056b3;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 400px;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .modal-close:hover {
+    color: #0056b3;
+  }
