@@ -1,0 +1,93 @@
+/* Main container for the navigation bar */
+.navigation-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa; /* Light background for the navbar */
+  }
+  
+  /* Left side for Home, Login, and Sign Up links */
+  .navigation-menu {
+    display: flex;
+    gap: 10px; /* Adds spacing between the links */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Individual navigation links */
+  .nav-link {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff; 
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    background-color: #0056b3; 
+  }
+  
+  .nav-link.active {
+    background-color: #0056b3; 
+  }
+  
+  /* Right side for Profile button */
+  .profile-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Profile Button styling */
+  .profile-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Profile dropdown */
+  .profile-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px;
+    list-style-type: none;
+    padding: 10px 0;
+  }
+  
+  .profile-dropdown li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .profile-dropdown li:last-child {
+    border-bottom: none;
+  }
+  
+  .profile-dropdown li button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .profile-dropdown li button:hover {
+    text-decoration: underline;
+  }
+  
+  /* Hidden class for hiding the dropdown */
+  .hidden {
+    display: none;
+  }
