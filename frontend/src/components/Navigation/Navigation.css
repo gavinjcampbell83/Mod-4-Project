@@ -22,17 +22,18 @@
     padding: 10px 20px;
     /* border-radius: 5px; */
     text-decoration: none;
-    font-size: 16px;
-    color: white;
+    font-size: 22px;
+    color: rgb(235, 87, 198);
     /* background-color: rgba(0, 0, 0, 0.1); */
     border: none;
     cursor: pointer;
     /* transition: background-color 0.3s ease; */
   }
   
-  /* .nav-link:hover {
+  .nav-link:hover {
     background-color: #0056b3;
-  } */
+    /* box-shadow: 10px 5px 5px #007bff; */
+  }
   
   /* .nav-link.active {
     background-color: #0056b3;
@@ -56,7 +57,7 @@
   
   /* Profile Button hover effect */
   .profile-button:hover {
-    color: #b31b00;
+    color: rgb(235, 87, 198);
   }
 
   .profile-button {
