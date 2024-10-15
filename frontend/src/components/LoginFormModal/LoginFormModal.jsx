@@ -18,11 +18,29 @@ function LoginFormModal() {
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
+        console.log("data", data)
+        if (data && data.message) {
+          setErrors({general: data.message});
+          console.log("FrontEndError", errors)
         }
+        
       });
   };
+  
+  const handleDemoLogin = (e) => {
+    e.preventDefault();
+    setErrors({});
+    return dispatch(sessionActions.login({ credential: 'Demo-lition', password: 'password' }))
+    .then(closeModal)
+    .catch(async (res) => {
+      const data = await res.json();
+      if (data && data.message){
+        setErrors({general: data.message})
+      }
+    })
+  }
+
+  const isDisabled = credential.length < 4 || password.length < 6;
 
   return (
     <>
@@ -46,10 +64,15 @@ function LoginFormModal() {
             required
           />
         </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
+        {errors.general && (
+          <p className='error'>{errors.general}</p>
         )}
-        <button type="submit">Log In</button>
+      <div className="button-container">
+          <button type="submit" disabled={isDisabled}>Log In</button>
+          <button className="demo-login" onClick={handleDemoLogin}>
+            Log in as Demo User
+          </button>
+        </div>
       </form>
     </>
   );

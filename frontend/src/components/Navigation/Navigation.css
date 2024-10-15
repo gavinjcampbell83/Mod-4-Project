@@ -1,17 +1,17 @@
 /* Main container for the navigation bar */
 .navigation-container {
     display: flex;
-    justify-content: space-between; /* Home on the left, Profile on the right */
+    justify-content: space-between; 
     align-items: center;
     padding: 10px 20px;
-    background-color: #f8f9fa; /* Light background for the navbar */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow for navbar */
+    background-color: #f8f9fa; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
   }
   
   /* Left side for Home link */
   .navigation-menu {
     display: flex;
-    gap: 10px; /* Adds spacing between the links */
+    gap: 10px; 
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -20,23 +20,23 @@
   /* Individual navigation links */
   .nav-link {
     padding: 10px 20px;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     text-decoration: none;
     font-size: 16px;
     color: white;
-    background-color: #007bff;
+    /* background-color: rgba(0, 0, 0, 0.1); */
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    /* transition: background-color 0.3s ease; */
   }
   
-  .nav-link:hover {
+  /* .nav-link:hover {
     background-color: #0056b3;
-  }
+  } */
   
-  .nav-link.active {
+  /* .nav-link.active {
     background-color: #0056b3;
-  }
+  } */
   
   /* Right side for Profile button */
   .profile-container {
@@ -49,20 +49,37 @@
   .profile-button {
     background: none;
     border: none;
-    font-size: 24px; /* Reduced size to make the profile icon smaller */
+    font-size: 24px; 
     cursor: pointer;
     color: #007bff;
   }
   
   /* Profile Button hover effect */
   .profile-button:hover {
-    color: #0056b3;
+    color: #b31b00;
+  }
+
+  .profile-button {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .icon-user {
+    font-size: 1.5rem;
+    margin-left: 8px; 
+  }
+  
+  .icon-bars {
+    font-size: 1.5rem;
   }
   
   /* Profile dropdown */
   .profile-dropdown {
     position: absolute;
-    top: 50px; /* Adjusted for the dropdown to be right under the icon */
+    top: 50px; 
     right: 0;
     background-color: white;
     border: 1px solid #ddd;
@@ -111,7 +128,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for modal background */
+    background-color: rgba(0, 0, 0, 0.5); 
     z-index: 1000;
   }
 
@@ -147,4 +164,10 @@
   
   .modal-close:hover {
     color: #0056b3;
+  }
+
+  button:disabled {
+    background-color: grey;
+    cursor: not-allowed;  
+    opacity: 0.5;
   }

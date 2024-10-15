@@ -29,7 +29,20 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <h1>Welcome!</h1>
+      },
+      {
+        path: '/spots/:spotid',
+        element: <h1>Spot!</h1>
+      },
+      {
+        path: '/reviews',
+        element: <h1>Reviews!</h1>
+      },
+      {
+        path: '*',
+        element: <h1>Page Does Not Exist</h1>
       }
+
     ]
   }
 ]);

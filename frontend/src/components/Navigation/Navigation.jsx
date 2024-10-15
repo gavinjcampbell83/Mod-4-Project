@@ -10,7 +10,7 @@ function Navigation({ isLoaded }) {
       <nav className="navigation-container">
         <ul className="navigation-menu">
           <li>
-            <NavLink to="/" className="nav-link">Home</NavLink>
+            <NavLink to="/" className="nav-link">Bearbnb</NavLink>
           </li>
         </ul>
         {isLoaded && (

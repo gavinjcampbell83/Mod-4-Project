@@ -25,6 +25,12 @@ export const login = (user) => async (dispatch) => {
       password
     })
   });
+
+  if (!response.ok) {
+    console.log("do I make it")
+    throw response; // This will be caught in your `catch` block in the component
+  }
+
   const data = await response.json();
   dispatch(setUser(data.user));
   return response;
