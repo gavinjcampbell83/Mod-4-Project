@@ -27,8 +27,7 @@ export const login = (user) => async (dispatch) => {
   });
 
   if (!response.ok) {
-    console.log("do I make it")
-    throw response; // This will be caught in your `catch` block in the component
+    throw response; 
   }
 
   const data = await response.json();

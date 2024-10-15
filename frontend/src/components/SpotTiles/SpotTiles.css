@@ -1,22 +1,37 @@
-.spots-grid {
+.spot-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-  
-  .spot-tile {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 20px; 
+    margin: 20px;
+}
+
+.spot-tile {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 10px;
-    text-align: center;
-  }
-  
-  .spot-tile img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-  
-  .star-icon {
-    color: gold;
-  }
+    text-align: left; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    height: 100%; 
+    cursor: pointer;
+}
+
+
+.spot-tile img {
+    width: 100%; 
+    max-height: 400px; 
+    object-fit: cover; 
+    border-radius: 5px; 
+}
+
+.spot-info {
+    display: flex;
+    justify-content: space-between; 
+    margin-top: 10px; 
+}
+
+.star-rating {
+    display: flex;
+    align-items: center; 
+}
