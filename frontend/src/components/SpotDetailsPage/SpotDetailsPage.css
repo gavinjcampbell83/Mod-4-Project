@@ -11,8 +11,12 @@
 
 .spot-image {
     width: 60%; 
-    height: auto;
+    height: auto; 
+    max-height: 400px; 
     border-radius: 10px; 
+    object-fit: cover; 
+    margin: 0 auto; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 .other-images {

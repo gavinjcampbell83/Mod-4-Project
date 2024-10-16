@@ -15,8 +15,13 @@
     justify-content: flex-start; 
     height: 100%; 
     cursor: pointer;
+    text-decoration: none; 
+    color: inherit; 
 }
 
+.spot-tile:hover {
+    text-decoration: none; 
+}
 
 .spot-tile img {
     width: 100%; 
@@ -26,12 +31,30 @@
 }
 
 .spot-info {
+    margin-top: 10px;
+}
+
+.location-price-rating {
     display: flex;
-    justify-content: space-between; 
-    margin-top: 10px; 
+    justify-content: space-between;  
+    align-items: center;
+}
+
+.location-price {
+    display: flex;
+    flex-direction: column;
 }
 
 .star-rating {
     display: flex;
-    align-items: center; 
+    align-items: center;
+}
+
+.star-icon {
+    color: gold;
+    margin-right: 5px;
+}
+
+.spot-tile div, .spot-tile span {
+    text-decoration: none;
 }

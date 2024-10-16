@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSpotDetails } from '../../store/spots'; 
+import { fetchSpotDetails, fetchSpotReviews } from '../../store/spots'; 
 import { useParams } from 'react-router-dom';
 import './SpotDetailsPage.css'
 
@@ -9,9 +9,12 @@ function SpotDetailsPage() {
   const dispatch = useDispatch();
   const { spotid } = useParams();
   const spotDetails = useSelector(state => state.spots.spotDetails);
+  const reviews = useSelector(state => state.spots.reviews);
+    
 
   useEffect(() => {
     dispatch(fetchSpotDetails(spotid)); 
+    dispatch(fetchSpotReviews(spotid));
   }, [dispatch, spotid]);
 
   if (!spotDetails) return <div>Loading...</div>; 
@@ -56,8 +59,18 @@ function SpotDetailsPage() {
             <div className="price-info">
                 <div className="bordered-box">
                     <div className="price">${spotDetails.price} per night</div>
-                    <div className="average-rating">{spotDetails.avgStarRating} ★</div>
-                    <div className="num-reviews">{spotDetails.numReviews} Reviews</div>
+                    <div className="review-summary">
+                        <div className="average-rating">
+                        <span className="star-icon">★</span> 
+                        {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
+                        {spotDetails.numReviews > 0 && (
+                    <>
+                        <span className="dot"> · </span>
+                        {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
+                     </>
+                         )}
+                        </div>
+                    </div>
                     <button className="reserve-button"  onClick={handleReserveClick}>Reserve</button>
                 </div>
             </div>
@@ -66,20 +79,32 @@ function SpotDetailsPage() {
         <div className="reviews-section">
             <h3>Reviews</h3>
             <div className="review-summary">
-                <div className="average-rating">{spotDetails.avgStarRating} ★</div>
-                <div className="num-reviews">{spotDetails.numReviews} Reviews</div>
+            <div className="average-rating">
+                        <span className="star-icon">★</span> 
+                        {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
+                        {spotDetails.numReviews > 0 && (
+                    <>
+                        <span className="dot"> · </span>
+                        {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
+                     </>
+                         )}
+                        </div>
             </div>
-            {/* Reviews Placeholder */}
-            {spotDetails.reviews && spotDetails.reviews.map((review) => (
-                <div className="review" key={review.id}>
-                    <div className="reviewer-name">{review.firstName}</div>
-                    <div className="review-date">{new Date(review.date).toLocaleString('default', { month: 'long', year: 'numeric' })}</div>
-                    <div className="review-details">{review.details}</div>
-                </div>
-            ))}
+        {Array.isArray(reviews) && reviews.length > 0 ? (
+        reviews.map((review) => (
+            <div className="review" key={review.id}>
+                <div className="reviewer-name">{review.User?.firstName || 'Anonymous'}</div> 
+                <div className="review-date">{new Date(review.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' })}</div>
+                <div className="review-details">{review.review}</div>
+            </div>
+        ))
+    ) : (
+        <div>Be the first to post a review!</div>
+    )}
         </div>
     </div>
-);
+    );
 }
+
 
 export default SpotDetailsPage;
