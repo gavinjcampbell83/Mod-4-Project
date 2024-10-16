@@ -6,6 +6,7 @@ const { User } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
+const { validationResult } = require('express-validator');
 
 const validateSignup = [
     check('email')
@@ -28,27 +29,83 @@ const validateSignup = [
   ];
 
 // Sign up
-router.post(
-    '/',
-    validateSignup,
-    async (req, res) => {
-      const { email, password, username, firstName, lastName} = req.body;
-      const hashedPassword = bcrypt.hashSync(password);
-      const user = await User.create({ email, username, hashedPassword, firstName, lastName});
+// router.post(
+//     '/',
+//     validateSignup,
+//     async (req, res) => {
+//       const { email, password, username, firstName, lastName} = req.body;
+//       const hashedPassword = bcrypt.hashSync(password);
+//       const user = await User.create({ email, username, hashedPassword, firstName, lastName});
   
-      const safeUser = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        username: user.username
+//       const safeUser = {
+//         id: user.id,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         email: user.email,
+//         username: user.username
         
-      };
+//       };
   
-      await setTokenCookie(res, safeUser);
+//       await setTokenCookie(res, safeUser);
   
-      return res.status(201).json({user: safeUser});
+//       return res.status(201).json({user: safeUser});
+//     }
+//   );
+
+router.post(
+  '/',
+  validateSignup, 
+  async (req, res, next) => {
+    const { email, username, password, firstName, lastName } = req.body;
+
+    const validationErrors = validationResult(req);
+    const errors = {};
+
+    if (!validationErrors.isEmpty()) {
+      validationErrors.array().forEach(error => {
+        errors[error.param] = error.msg;
+      });
     }
-  );
+
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) {
+      errors.email = 'Email must be unique';
+    }
+
+    const existingUsername = await User.findOne({ where: { username } });
+    if (existingUsername) {
+      errors.username = 'Username must be unique';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({
+        message: 'Validation error',
+        errors
+      });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password);
+    const user = await User.create({
+      email,
+      username,
+      hashedPassword,
+      firstName,
+      lastName
+    });
+
+    const safeUser = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      username: user.username
+    };
+
+    await setTokenCookie(res, safeUser);
+
+    return res.status(201).json({ user: safeUser });
+  }
+);
+
 
 module.exports = router;
