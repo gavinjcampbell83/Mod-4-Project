@@ -37,7 +37,6 @@ function SpotDetailsPage() {
                 alt={spotDetails.name} 
             />
 
-            {/* Other Images Placeholder */}
             <div className="other-images">
                 {spotDetails.SpotImages.slice(1).map((image) => (
                     <img 

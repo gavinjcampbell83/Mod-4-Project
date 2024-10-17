@@ -153,3 +153,16 @@
     cursor: not-allowed;  
     opacity: 0.5;
   }
+
+  .create-spot-button {
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.create-spot-button:hover {
+    background-color: #0056b3;
+    color: rgb(235, 87, 198);
+}

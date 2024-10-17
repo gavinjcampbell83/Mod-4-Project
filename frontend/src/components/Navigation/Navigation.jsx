@@ -5,7 +5,7 @@ import './Navigation.css';
 
 function Navigation({ isLoaded }) {
     const sessionUser = useSelector(state => state.session.user);
-  
+
     return (
       <nav className="navigation-container">
         <ul className="navigation-menu">
@@ -15,6 +15,11 @@ function Navigation({ isLoaded }) {
         </ul>
         {isLoaded && (
           <div className="profile-container">
+            {sessionUser && (
+              <NavLink to="/spots/new" className="nav-link create-spot-button">
+                Create a New Spot
+              </NavLink>
+            )}
             <ProfileButton user={sessionUser} />
           </div>
         )}

@@ -1,6 +1,6 @@
 .spot-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    grid-template-columns: repeat(4, 1fr); 
     gap: 20px; 
     margin: 20px;
 }
@@ -57,4 +57,22 @@
 
 .spot-tile div, .spot-tile span {
     text-decoration: none;
+}
+
+@media (max-width: 950px) {
+    .spot-grid {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+@media (max-width: 800px) {
+    .spot-grid {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 600px) {
+    .spot-grid {
+        grid-template-columns: 1fr; 
+    }
 }

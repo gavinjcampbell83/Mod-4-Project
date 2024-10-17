@@ -1,8 +1,10 @@
+import { csrfFetch } from "./csrf";
 
 export const LOAD_SPOTS = 'spots/Load_SPOTS';
 export const LOAD_SPOT_DETAILS = 'spots/LOAD_SPOT_DETAILS';
 export const LOAD_SPOT_REVIEWS = 'spots/LOAD_SPOT_REVIEWS';
-
+export const CREATE_SPOT = 'spots/CREATE_SPOT';
+export const ADD_SPOT_IMAGE = 'spots/ADD_SPOT_IMAGE';
 
 const loadSpots = (spots) => ({
     type: LOAD_SPOTS,
@@ -17,6 +19,17 @@ const loadSpotDetails = (spot) => ({
 const loadSpotReviews = (reviews) => ({
     type: LOAD_SPOT_REVIEWS,
     reviews,
+});
+
+const createSpotAction = (spot) => ({
+    type: CREATE_SPOT,
+    spot,
+});
+
+const addSpotImageAction = (spotId, image) => ({
+    type: ADD_SPOT_IMAGE,
+    spotId,
+    image,
 });
 
 export const fetchSpots = () => async (dispatch) => {
@@ -43,6 +56,47 @@ export const fetchSpotReviews = (spotId) => async (dispatch) => {
     }
 }
 
+export const createSpot =(spotData) => async (dispatch) => {
+    const response = await csrfFetch('/api/spots', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(spotData),
+    });
+
+    if (response.ok) {
+        const spot = await response.json();
+        dispatch(createSpotAction(spot));
+        return spot;
+    }else {
+        const errors = await response.json();
+        return errors;
+    }
+};
+
+export const addSpotImage = (spotId, imageUrl, isPreview) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            url: imageUrl,
+            preview: isPreview,
+        }),
+    });
+
+    if (response.ok) {
+        const image = await response.json();
+        dispatch(addSpotImageAction(spotId, image));
+        return image;
+    }else {
+        const errors = await response.json();
+        return errors;
+    }
+};
+
 const initialState = {
     spotDetails: null, 
     reviews: [],
@@ -62,6 +116,21 @@ const spotsReducer = (state = initialState, action) => {
             return { ...state, spotDetails: action.spot };
         case LOAD_SPOT_REVIEWS:
             return { ...state, reviews: action.reviews };
+            case CREATE_SPOT: {
+                const newState = { ...state, spots: { ...state.spots } };
+                newState.spots[action.spot.id] = action.spot;
+                return newState;
+            }
+            case ADD_SPOT_IMAGE: {
+                const newState = { ...state, spots: { ...state.spots } };
+                if (newState.spots[action.spotId]) {
+                    newState.spots[action.spotId].images = [
+                        ...(newState.spots[action.spotId].images || []),
+                        action.image
+                    ];
+                }
+                return newState;
+            }
             default:
                 return state;
     }

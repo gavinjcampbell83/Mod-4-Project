@@ -1,0 +1,58 @@
+.new-spot-form {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .new-spot-form h1 {
+    text-align: center;
+  }
+  
+  .new-spot-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .new-spot-form input, .new-spot-form textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .new-spot-form button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .new-spot-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .error-list {
+    color: red;
+    list-style-type: none;
+  }
+
+  .description-header {
+    color: rgb(235, 87, 198);
+    font-weight: 200;
+    font-size:  .85rem; 
+    line-height: 1.1; 
+    margin: 0; 
+}
+
+.separator {
+  border-top: 1px solid #ccc; 
+  margin: 20px 0; 
+}
+
+label {
+  font-weight: 600; 
+  margin-bottom: 5px; 
+  display: block; 
+}
