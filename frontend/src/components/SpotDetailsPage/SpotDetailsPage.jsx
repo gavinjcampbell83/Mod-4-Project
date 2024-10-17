@@ -1,16 +1,17 @@
-
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSpotDetails, fetchSpotReviews } from '../../store/spots'; 
 import { useParams } from 'react-router-dom';
-import './SpotDetailsPage.css'
+import './SpotDetailsPage.css';
+import OpenModalButton from '../OpenModalButton/OpenModalButton';
+import CreateReviewForm from '../CreateReviewForm/CreateReviewForm'; 
 
 function SpotDetailsPage() {
   const dispatch = useDispatch();
   const { spotid } = useParams();
   const spotDetails = useSelector(state => state.spots.spotDetails);
   const reviews = useSelector(state => state.spots.reviews);
-    
+  const currentUser = useSelector(state => state.session.user); 
 
   useEffect(() => {
     dispatch(fetchSpotDetails(spotid)); 
@@ -18,6 +19,9 @@ function SpotDetailsPage() {
   }, [dispatch, spotid]);
 
   if (!spotDetails) return <div>Loading...</div>; 
+
+  const userHasPostedReview = reviews.some((review) => review.userId === currentUser?.id);
+  const isSpotOwner = currentUser?.id === spotDetails.Owner?.id;
 
   const handleReserveClick = () => {
     alert("Feature Coming Soon..."); 
@@ -60,50 +64,64 @@ function SpotDetailsPage() {
                     <div className="price">${spotDetails.price} per night</div>
                     <div className="review-summary">
                         <div className="average-rating">
-                        <span className="star-icon">★</span> 
-                        {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
-                        {spotDetails.numReviews > 0 && (
-                    <>
-                        <span className="dot"> · </span>
-                        {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
-                     </>
-                         )}
+                            <span className="star-icon">★</span> 
+                            {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
+                            {spotDetails.numReviews > 0 && (
+                                <>
+                                    <span className="dot"> · </span>
+                                    {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
+                                </>
+                            )}
                         </div>
                     </div>
-                    <button className="reserve-button"  onClick={handleReserveClick}>Reserve</button>
+                    <button className="reserve-button" onClick={handleReserveClick}>Reserve</button>
                 </div>
             </div>
         </div>
         <hr className="divider" />
+
         <div className="reviews-section">
             <h3>Reviews</h3>
             <div className="review-summary">
-            <div className="average-rating">
-                        <span className="star-icon">★</span> 
-                        {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
-                        {spotDetails.numReviews > 0 && (
-                    <>
-                        <span className="dot"> · </span>
-                        {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
-                     </>
-                         )}
-                        </div>
+                <div className="average-rating">
+                    <span className="star-icon">★</span> 
+                    {spotDetails.avgStarRating ? spotDetails.avgStarRating.toFixed(1) : 'New'} 
+                    {spotDetails.numReviews > 0 && (
+                        <>
+                            <span className="dot"> · </span>
+                            {spotDetails.numReviews === 1 ? "1 Review" : `${spotDetails.numReviews} Reviews`}
+                        </>
+                    )}
+                </div>
             </div>
-        {Array.isArray(reviews) && reviews.length > 0 ? (
-        reviews.map((review) => (
+
+            {currentUser && !userHasPostedReview && !isSpotOwner && (
+                <OpenModalButton
+                    buttonText="Post Your Review"
+                    modalComponent={<CreateReviewForm spotId={spotid} />}
+                    onModalClose={() => {
+                        
+                    }}
+                />
+            )}
+
+            {Array.isArray(reviews) && reviews.length > 0 ? (
+                reviews
+                .slice() 
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) 
+                .map((review) => (
             <div className="review" key={review.id}>
-                <div className="reviewer-name">{review.User?.firstName || 'Anonymous'}</div> 
+                <div className="reviewer-name">{review.User?.firstName || 'Anonymous'}</div>
                 <div className="review-date">{new Date(review.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' })}</div>
                 <div className="review-details">{review.review}</div>
             </div>
         ))
-    ) : (
-        <div>Be the first to post a review!</div>
-    )}
+) : (
+    <div>Be the first to post a review!</div>
+)}
         </div>
     </div>
-    );
+  );
 }
-
 
 export default SpotDetailsPage;
