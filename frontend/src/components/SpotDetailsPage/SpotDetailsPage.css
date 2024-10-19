@@ -96,6 +96,10 @@
     flex-direction: column;
 }
 
+.reserve-button {
+    background-color: rgb(235, 87, 198);
+}
+
 .review-header {
     display: flex;
     justify-content: space-between;
@@ -139,8 +143,12 @@
     margin-top: 10px;
 }
 
+.modal-popup-button {
+   background-color: #3b3f42;
+}
+
 .post-review-button {
-    background-color: #007bff;
+    background-color: #3b3f42;
     color: white;
 }
 

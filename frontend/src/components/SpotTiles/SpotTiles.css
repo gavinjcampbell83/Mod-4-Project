@@ -21,32 +21,32 @@
 
 .spot-tile-wrapper {
     position: relative;
-    display: inline-block; /* Ensure it wraps tightly around the content */
+    display: inline-block; 
 }
 
-/* Tooltip container */
+
 .spot-name {
     position: absolute;
-    bottom: 10px; /* Position tooltip slightly above the bottom */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Adjust to ensure it's centered */
-    max-width: 90%; /* Keep tooltip within the tile bounds */
+    bottom: 10px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    max-width: 90%; 
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.7); /* Tooltip background */
-    color: white; /* Tooltip text color */
+    background-color: rgba(0, 0, 0, 0.7); 
+    color: white; 
     padding: 5px 10px;
     border-radius: 5px;
-    display: none; /* Initially hidden */
-    z-index: 10; /* Ensure it's above other elements */
-    pointer-events: none; /* Prevent interaction with the tooltip */
+    display: none; 
+    z-index: 10; 
+    pointer-events: none;
 }
 
-/* Show tooltip on hover */
+
 .spot-tile-wrapper:hover .spot-name {
     display: block;
 }
 
-/* Tooltip text */
+
 .spot-tooltip {
     font-size: 14px;
     white-space: nowrap;
@@ -68,15 +68,27 @@
     margin-top: 10px;
 }
 
+.spot-tile a {
+    text-decoration: none; 
+    color: inherit; 
+}
+
+.spot-tile a:hover {
+    text-decoration: none; 
+    color: inherit; 
+}
+
 .location-price-rating {
     display: flex;
     justify-content: space-between;  
-    align-items: center;
+    align-items: last baseline;
+    text-decoration: none;
 }
 
 .location-price {
     display: flex;
     flex-direction: column;
+    text-decoration: none;
 }
 
 .star-rating {
@@ -112,14 +124,15 @@
 }
 
 .spot-actions {
-    display: flex;
-    justify-content: space-between;
+    display: flexbox;
+    justify-content: space-around;
     margin-top: 10px;
 }
 
+
 .delete-button {
     background-color: #d9534f;
-    color: white;
+    color: #292e33,
 }
 
 .delete-button:hover {
@@ -127,20 +140,10 @@
 }
 
 .update-button {
-    background-color: #007bff;
+    background-color: #292e33;
     color: white;
 }
 
 .update-button:hover {
     background-color: #0056b3;
-}
-
-.update-button, .delete-button {
-    padding: 8px 16px;
-    font-size: 0.875rem;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    text-align: center;
-    width: 48%; /* Ensure buttons are next to each other and not too wide */
 }

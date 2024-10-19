@@ -26,7 +26,7 @@ const SpotTiles = () => {
                     <div className="location-price-rating">
                         <div className="location-price">
                             <div data-testid='spot-city'>{spot.city}, {spot.state}</div>
-                            <div data-testid='spot-price'>${spot.price} / night</div>
+                            <div data-testid='spot-price'>${spot.price} night</div>
                         </div>
                         <div data-testid='spot-rating' className="star-rating">
                             <span className="star-icon">★</span>
