@@ -78,8 +78,7 @@ button:hover {
     color: gold;
 }
 
-.star:hover,
-.star:hover ~ .star {
+.star:hover {
     color: gold;
 }
 
