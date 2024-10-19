@@ -46,30 +46,33 @@ function SignupFormModal() {
   return (
     <>
       <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
+      <form data-testid='sign-up-form' onSubmit={handleSubmit}>
         <label>
           Email
           <input
+            data-testid='email-input'
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </label>
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p data-testid='email-error-message'>{errors.email}</p>}
         <label>
           Username
           <input
+            data-testid='username-input'
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </label>
-        {errors.username && <p>{errors.username}</p>}
+        {errors.username && <p data-testid='username-error-message'>{errors.username}</p>}
         <label>
           First Name
           <input
+            data-testid='first-name-input'
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -80,6 +83,7 @@ function SignupFormModal() {
         <label>
           Last Name
           <input
+            data-testid='last-name-input'
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -90,6 +94,7 @@ function SignupFormModal() {
         <label>
           Password
           <input
+            data-testid='password-input'
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -100,6 +105,7 @@ function SignupFormModal() {
         <label>
           Confirm Password
           <input
+            data-testid='confirm-password-input'
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -109,7 +115,7 @@ function SignupFormModal() {
         {errors.confirmPassword && (
           <p>{errors.confirmPassword}</p>
         )}
-        <button type="submit" disabled={isDisabled}>Sign Up</button>
+        <button data-testid='form-sign-up-button' type="submit" disabled={isDisabled}>Sign Up</button>
       </form>
     </>
   );

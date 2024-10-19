@@ -1,0 +1,93 @@
+.new-spot-form {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+
+
+.new-spot-form h2 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.new-spot-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.new-spot-form input, .new-spot-form textarea {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%; 
+  box-sizing: border-box; 
+  font-size: 1rem; 
+}
+
+.new-spot-form textarea {
+  resize: none; 
+  height: 100px; 
+}
+
+.new-spot-form button {
+  padding: 12px;
+  background-color: #489aec;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-top: 20px; 
+  transition: background-color 0.3s ease;
+}
+
+.new-spot-form button:hover {
+  background-color: #0056b3;
+}
+
+.error-list, .error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: -5px; 
+  margin-bottom: 10px; 
+}
+
+.description-header {
+  color: rgb(235, 87, 198);
+  font-weight: 400; 
+  font-size: 1rem; 
+  line-height: 1.3; 
+  margin: 0 0 10px 0; 
+}
+
+.separator {
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .new-spot-form {
+      padding: 15px;
+  }
+
+  .new-spot-form h1 {
+      font-size: 1.5rem; 
+  }
+
+  .new-spot-form button {
+      padding: 10px; 
+  }
+}

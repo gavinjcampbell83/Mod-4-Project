@@ -58,8 +58,9 @@ function CreateReviewForm({ spotId }) {
 
   return (
     <>
+    <div data-testid='review-modal'></div>
       <h2>How was your stay?</h2>
-      <form onSubmit={handleSubmit}>
+      <form data-testid='review-form' onSubmit={handleSubmit}>
         <label>
           Review
           <textarea
@@ -71,12 +72,13 @@ function CreateReviewForm({ spotId }) {
         </label>
         {errors.review && <p className="error">{errors.review}</p>}
 
-        <div className="stars-container">
+        <div data-testid='review-star-clickable' className="stars-container">
           {renderStars()}
+          Stars
         </div>
         {errors.stars && <p className="error">{errors.stars}</p>}
 
-        <button type="submit" disabled={review.length < 10 || stars <= 0}>
+        <button data-testid='review-button' type="submit" disabled={review.length < 10 || stars <= 0}>
           Submit Your Review
         </button>
       </form>

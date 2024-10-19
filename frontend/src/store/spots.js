@@ -8,6 +8,9 @@ export const ADD_SPOT_IMAGE = 'spots/ADD_SPOT_IMAGE';
 export const POST_REVIEW = 'spots/POST_REVIEW';
 export const POST_REVIEW_SUCCESS = 'spots/POST_REVIEW_SUCCESS';
 export const POST_REVIEW_ERROR = 'spots/POST_REVIEW_ERROR';
+export const DELETE_REVIEW = 'spots/DELETE_REVIEW';
+export const LOAD_USER_SPOTS = 'spots/LOAD_USER_SPOTS';
+export const DELETE_SPOT = 'spots/DELETE_SPOT'
 
 const loadSpots = (spots) => ({
     type: LOAD_SPOTS,
@@ -48,6 +51,22 @@ const postReviewError = (error) => ({
     type: POST_REVIEW_ERROR,
     payload: error,
 });
+
+const deleteReviewSuccess = (reviewId) => ({
+    type: DELETE_REVIEW,
+    reviewId,
+})
+
+const loadUserSpots = (userSpots) => ({
+    type: LOAD_USER_SPOTS,
+    userSpots,
+});
+
+const deleteSpotSuccess = (spotId) => ({
+    type: DELETE_SPOT,
+    spotId,
+})
+
 
 export const fetchSpots = () => async (dispatch) => {
     const response = await fetch('/api/spots');
@@ -138,6 +157,60 @@ export const createReview = (spotId, reviewData) => async (dispatch) => {
     }
 };
 
+export const deleteReview = (reviewId, spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+        method: 'DELETE',
+    });
+
+    if (response.ok) {
+        dispatch(deleteReviewSuccess(reviewId));
+        dispatch(fetchSpotDetails(spotId));
+        dispatch(fetchSpotReviews(spotId));
+    } else {
+        const error = await response.json();
+        throw error;
+    }
+};
+
+export const fetchUserSpots = () => async (dispatch) => {
+    const response = await csrfFetch('/api/spots/current'); 
+    if (response.ok) {
+        const data = await response.json();
+        console.log('CURRENT SPOT DATA', data)
+        dispatch(loadUserSpots(data.Spots)); 
+    } else {
+        const error = await response.json();
+        throw error;
+    }
+};
+
+export const deleteSpot = (spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`, {
+        method: 'DELETE',
+    });
+    if (response.ok) {
+        dispatch(deleteSpotSuccess(spotId));
+        dispatch(fetchUserSpots())
+    }
+};
+
+export const updateSpot = (spotId, spotData) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(spotData),
+    });
+  
+    if (response.ok) {
+      const updatedSpot = await response.json();
+      dispatch(fetchSpotDetails(spotId));
+      dispatch(fetchSpotReviews(spotId)); 
+      return updatedSpot;
+    } else {
+      const errors = await response.json();
+      return errors;
+    }
+  };
 
 const initialState = {
     spotDetails: null,
@@ -156,15 +229,27 @@ const spotsReducer = (state = initialState, action) => {
             });
             return { ...state, spots: { ...state.spots, ...newSpots } };
         }
+
+        case LOAD_USER_SPOTS: {
+            const userSpots = {};
+            action.userSpots.forEach(spot => {
+                userSpots[spot.id] = spot; 
+            });
+            return { ...state, spots: userSpots };
+        }
+        
         case LOAD_SPOT_DETAILS: 
             return { ...state, spotDetails: action.spot };
-        case LOAD_SPOT_REVIEWS:
+        
+            case LOAD_SPOT_REVIEWS:
             return { ...state, reviews: action.reviews };
-        case CREATE_SPOT: {
+        
+            case CREATE_SPOT: {
             const newState = { ...state, spots: { ...state.spots } };
             newState.spots[action.spot.id] = action.spot;
             return newState;
         }
+        
         case ADD_SPOT_IMAGE: {
             const newState = { ...state, spots: { ...state.spots } };
             if (newState.spots[action.spotId]) {
@@ -175,14 +260,34 @@ const spotsReducer = (state = initialState, action) => {
             }
             return newState;
         }
+        
         case POST_REVIEW:
             return { ...state, loading: true, error: null };
-        case POST_REVIEW_SUCCESS: {
+        
+            case POST_REVIEW_SUCCESS: {
             const newReviews = [...state.reviews, action.payload];
             return { ...state, reviews: newReviews, loading: false };
         }
+        
         case POST_REVIEW_ERROR:
             return { ...state, loading: false, error: action.payload };
+            
+        case DELETE_REVIEW: {
+                const updatedReviews = state.reviews.filter(
+                    (review) => review.id !== action.reviewId
+                );
+                return {
+                    ...state,
+                    reviews: updatedReviews,
+                };
+        }
+
+        case DELETE_SPOT: {
+            const newState = { ...state, spots: { ...state.spots } };
+            delete newState.spots[action.spotId]; 
+            return newState;
+        }
+
         default:
             return state;
     }

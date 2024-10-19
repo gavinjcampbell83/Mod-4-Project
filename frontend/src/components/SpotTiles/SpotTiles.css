@@ -19,6 +19,40 @@
     color: inherit; 
 }
 
+.spot-tile-wrapper {
+    position: relative;
+    display: inline-block; /* Ensure it wraps tightly around the content */
+}
+
+/* Tooltip container */
+.spot-name {
+    position: absolute;
+    bottom: 10px; /* Position tooltip slightly above the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to ensure it's centered */
+    max-width: 90%; /* Keep tooltip within the tile bounds */
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7); /* Tooltip background */
+    color: white; /* Tooltip text color */
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: none; /* Initially hidden */
+    z-index: 10; /* Ensure it's above other elements */
+    pointer-events: none; /* Prevent interaction with the tooltip */
+}
+
+/* Show tooltip on hover */
+.spot-tile-wrapper:hover .spot-name {
+    display: block;
+}
+
+/* Tooltip text */
+.spot-tooltip {
+    font-size: 14px;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
 .spot-tile:hover {
     text-decoration: none; 
 }
@@ -75,4 +109,38 @@
     .spot-grid {
         grid-template-columns: 1fr; 
     }
+}
+
+.spot-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.delete-button {
+    background-color: #d9534f;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+}
+
+.update-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.update-button:hover {
+    background-color: #0056b3;
+}
+
+.update-button, .delete-button {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    width: 48%; /* Ensure buttons are next to each other and not too wide */
 }

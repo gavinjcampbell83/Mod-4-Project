@@ -10,13 +10,20 @@ function Navigation({ isLoaded }) {
       <nav className="navigation-container">
         <ul className="navigation-menu">
           <li>
-            <NavLink to="/" className="nav-link">Bearbnb</NavLink>
+            <NavLink to="/" className="nav-link"><img 
+              src="/image.png" 
+              alt="Bearbnb Logo" 
+              className="nav-favicon" 
+              data-testid='logo'
+            />
+            Bearbnb
+          </NavLink>
           </li>
         </ul>
         {isLoaded && (
           <div className="profile-container">
             {sessionUser && (
-              <NavLink to="/spots/new" className="nav-link create-spot-button">
+              <NavLink data-testid='create-new-spot-button' to="/spots/new" className="nav-link create-spot-button">
                 Create a New Spot
               </NavLink>
             )}

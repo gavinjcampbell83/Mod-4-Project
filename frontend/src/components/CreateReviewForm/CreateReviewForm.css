@@ -23,7 +23,7 @@ label {
 
 input[type="text"],
 textarea,
-select { 
+select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -36,7 +36,7 @@ select {
 
 input[type="text"]:focus,
 textarea:focus, 
-select:focus { 
+select:focus {
     border-color: #007bff;
     outline: none;
 }
@@ -60,25 +60,28 @@ button:hover {
 
 .stars-container {
     display: flex;
-    justify-content: center;
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px; 
     margin-top: 10px;
     margin-bottom: 20px;
-  }
-  
-  .star {
+}
+
+.star {
     font-size: 30px;
     cursor: pointer;
     color: lightgray;
     transition: color 0.2s;
-  }
-  
-  .star.filled {
+}
+
+.star.filled {
     color: gold;
-  }
-  
-  .star:hover ~ .star {
-    color: lightgray;
-  }
+}
+
+.star:hover,
+.star:hover ~ .star {
+    color: gold;
+}
 
 p {
     color: red;
