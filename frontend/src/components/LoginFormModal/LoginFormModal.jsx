@@ -47,6 +47,7 @@ function LoginFormModal() {
         <label>
           Username or Email
           <input
+            data-testid='credential-input'
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
@@ -56,6 +57,7 @@ function LoginFormModal() {
         <label>
           Password
           <input
+            data-testid='password-input'
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -66,8 +68,8 @@ function LoginFormModal() {
           <p className='error'>{errors.general}</p>
         )}
       <div className="button-container">
-          <button type="submit" disabled={isDisabled}>Log In</button>
-          <button className="demo-login" onClick={handleDemoLogin}>
+          <button data-testid='login-button' type="submit" disabled={isDisabled}>Log In</button>
+          <button data-testid='demo-user-login' className="demo-login" onClick={handleDemoLogin}>
             Log in as Demo User
           </button>
         </div>

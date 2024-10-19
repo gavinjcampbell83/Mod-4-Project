@@ -14,8 +14,22 @@
     padding: 0;
     margin: 0;
   }
+
+  .nav-favicon {
+    width: 24px;  
+    height: 24px;
+    margin-right: 8px; 
+    vertical-align: middle; 
+  }
+
+  .nav-link.active {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
   
   .nav-link {
+    align-items: flex-end;
     padding: 10px 20px;
     text-decoration: none;
     font-size: 22px;
@@ -25,7 +39,9 @@
   }
   
   .nav-link:hover {
-    background-color: #0056b3;
+    border-radius: 5px;
+    background-color: #1a1c1d;
+    color: rgb(235, 87, 198);
   }
     
   .profile-container {
@@ -39,10 +55,11 @@
     border: none;
     font-size: 24px; 
     cursor: pointer;
-    color: #007bff;
+    color: #3b3f42;
   }
   
   .profile-button:hover {
+    background-color: #1a1c1d;
     color: rgb(235, 87, 198);
   }
 
@@ -72,30 +89,65 @@
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    width: 200px;
+    width: 220px;  
     list-style-type: none;
-    padding: 10px 0;
-  }
-  
-  .profile-dropdown li {
-    padding: 10px 15px;
+    padding: 10px 0;  
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    gap: 15px;  
+}
+
+.greeting-email {
+  padding-bottom: 50px;
+}
+
+.profile-dropdown li {
+    display: flex;
+    justify-content: space-around;  
+    align-items: center;  
+    padding: 10px 5px; 
     border-bottom: 1px solid #eee;
-  }
-  
-  .profile-dropdown li:last-child {
-    border-bottom: none;
-  }
-  
-  .profile-dropdown li button {
+}
+
+.profile-dropdown li:last-child {
+    border-bottom: none;  
+}
+
+.profile-dropdown button {
+    display: flex;
+    justify-content: space-around;
     background: none;
     border: none;
     color: #007bff;
     cursor: pointer;
-  }
-  
-  .profile-dropdown li button:hover {
+    padding: 10px 15px;
+    width: 100%;  
+    text-align: left;
+    font-size: 1rem;  
+}
+
+.profile-dropdown li button:hover {
+    background-color: #f0f0f0;
     text-decoration: underline;
-  }
+}
+
+.manage-spots-button,
+.logout-button {
+    display: block;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;  
+    font-size: 1rem;  
+    text-align: center;  
+}
+
+.manage-spots-button:hover,
+.logout-button:hover {
+    background-color: #0056b3;
+}
   
   .hidden {
     display: none;
@@ -153,3 +205,16 @@
     cursor: not-allowed;  
     opacity: 0.5;
   }
+
+  .create-spot-button {
+    background-color: #3b3f42;
+    color: white;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.create-spot-button:hover {
+    background-color: #1a1c1d;
+    color: rgb(235, 87, 198);
+}

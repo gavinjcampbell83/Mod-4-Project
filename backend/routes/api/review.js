@@ -113,6 +113,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 
 //Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
+    console.log("Received review data:", req.body); 
     const { review, stars } = req.body;
 
     const spotId = Number(req.params.spotId);   
@@ -236,7 +237,9 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
 
 //Delete a Review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
+    
     const reviewId = parseInt(req.params.reviewId);
+    console.log('REVIEWID', reviewId)
     const userId = req.user.id;
 
     const deletedReview = await Review.findByPk(reviewId);
